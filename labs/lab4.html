@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>repl.it</title>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <style>
+        canvas {
+            background-color: #001E62;
+            z-index: 27;
+        }
+        
+        #myCanvas2 {
+            background-color: #551E55;
+            z-index: 27;
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <canvas id="myCanvas" width="500" height="300"></canvas>
+    <canvas id="myCanvas2" width="500" height="300"></canvas>
+    <p>Note that the event handler logs the event data. Open the JS console, click in the blue area, and expand the <strong>original event</strong> object to see the variety of positioning values available in our scripts.</strong>
+    </p>
+
+    <script>
+        $(function() {
+            $("canvas").on("click", function(e) {
+                console.log(e);
+            })
+        })
+
+
+
+
+        var c = document.getElementById("myCanvas"); //target our canvas, draw circle
+        var ctx = c.getContext("2d");
+
+
+
+        function draw() {
+
+            ctx.strokeStyle = "#D50032"; //set color to (color) before drawing
+            ctx.fillStyle = "#D50032";
+
+            ctx.beginPath();
+            ctx.arc(myCanvas.width / 2, myCanvas.height / 2, 100, 0, 2 * Math.PI); //circle is halfway of canvas
+            ctx.fill();
+            ctx.stroke();
+
+            ctx.fillStyle = "#FFF"; //set color to (color) before drawing
+            ctx.font = "30px Helvetica";
+            ctx.fillText("JT", myCanvas.width / 2 - 17, myCanvas.height / 2 + 10);
+            ctx.fillText("UIC", myCanvas.width / 2 - 25, myCanvas.height / 2 + 50);
+
+
+        }
+
+        function clear() {
+            ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        }
+
+
+        var c2 = document.getElementById("myCanvas2"); //target our canvas, draw circle
+        var ctx2 = c2.getContext("2d");
+        var circleX = myCanvas2.width / 2;
+        var circleY = myCanvas2.height / 2;
+        var xVel = 1;
+        var yVel = 0;
+        var radius = 50;
+
+        function drawCircle() {
+            ctx2.clearRect(0, 0, myCanvas2.width, myCanvas2.height);
+            ctx2.strokeStyle = "#D50032"; //set color to (color) before drawing
+            ctx2.fillStyle = "#D50032";
+
+            ctx2.beginPath();
+            ctx2.arc(circleX, circleY, radius, 0, 2 * Math.PI); //circle is halfway of canvas
+            ctx2.fill();
+            ctx2.stroke();
+
+
+
+            circleX += xVel;
+            circleY += yVel;
+
+
+            if (circleX - radius < 0) {
+                xVel *= -1;
+            }
+            else if (circleX + radius > myCanvas2.width) {
+                xVel *= -1;
+            }
+            if (circleY + radius > myCanvas2.height) {
+                yVel *= -1;
+            }
+            else if (circleY - radius < 0) {
+                yVel *= -1;
+            }
+            requestAnimationFrame(drawCircle); //call the function recursively
+        }
+
+        
+        window.addEventListener("load", function() { //need this as well to update
+            drawCircle(); //recursive 
+        });
+
+        document.onkeydown = function(e) { //Key presses
+            switch (e.keyCode) {
+                case 85: // u
+                    draw();
+                    break;
+                case 88: // x
+                    clear();
+                    break;
+                case 38: // up
+                    yVel -= 1;
+                    break;
+                case 40: // down
+                    yVel += 1;
+                    break;
+                case 37: // left
+                    xVel -= 1;
+                    break;
+                case 39: // right
+                    xVel += 1;
+                    break;
+            }
+        }
+    </script>
+</body>
+
+</html>
