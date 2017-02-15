@@ -1,0 +1,377 @@
+<html>
+
+<head>
+    <h1>Jonathan Tran - Project 2</h1>
+
+
+
+    <style>
+    
+    h1{
+        font-family: "comic sans", Roboto;
+        
+    }
+    
+    
+        /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+        
+        #map {
+            height: 75%;
+            width: 75%;
+            margin-left: auto;
+            margin-right: auto;
+        }
+        /* Optional: Makes the sample page fill the window. */
+        
+        html,
+        body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+        
+        #floating-panel {
+            position: absolute;
+            top: 10px;
+            left: 25%;
+            z-index: 5;
+            background-color: #fff;
+            padding: 5px;
+            border: 1px solid #999;
+            text-align: center;
+            font-family: 'Roboto', 'sans-serif';
+            line-height: 30px;
+            padding-left: 10px;
+        }
+        
+        #floating-panel {
+            background-color: #fff;
+            border: 1px solid #999;
+            left: 25%;
+            padding: 5px;
+            position: absolute;
+            top: 10px;
+            z-index: 5;
+        }
+    </style>
+</head>
+
+<body>
+    <!--Div that will hold the pie chart-->
+    <h1>Part 2: Pie chart of open pothole requests</h1>
+    <div id="chart_div"></div>
+
+    <h1>Part 1: Table of total potholes by community area</h1>
+
+
+
+    <style>
+        table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        
+        tr:nth-child(even) {
+            background-color: #dddddd;
+        }
+    </style>
+
+
+    <table id="myTable">
+        <tr>
+            <th>Community Area</th>
+            <th>Potholes</th>
+        </tr>
+
+    </table>
+
+
+
+
+
+    <!-- Bootstrap core JavaScript
+    ================================================== -->
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+    <script>
+        window.jQuery || document.write('<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"><\/script>')
+    </script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
+    <script src="https://getbootstrap.com/assets/js/ie10-viewport-bug-workaround.js"></script>
+
+    <script>
+        //STUFF I WORKED ON
+
+
+        $(function() {
+            var url = "https://data.cityofchicago.org/resource/7as2-ds3y.json" +
+                "?$query=select%20community_area%2Ccount(*)%20as%20totalPotholes%20Group%20By%20community_area" + //note the jquery is similar to SQL (practically the same)
+                "%20order%20by%20community_area%20asc"; //part 2 of sql
+            // url += '?' + $.param({});
+            //https://data.cityofchicago.org/resource/7as2-ds3y.json?$query=select%20community_area%2Ccount(*)%20as%20totalPotholes%20Group%20By%20community_area
+
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+            }).done(function(result) {
+                $.each(result, function(index, value) { //Jump down two object levels, and loop through end
+
+                    var table = document.getElementById("myTable"); //grab table id
+                    var row = table.insertRow(-1); //add to END
+                    var cell1 = row.insertCell(0); //to that row, add cells for col #
+                    var cell2 = row.insertCell(1);
+                    cell1.innerHTML = value.community_area; //get by loop
+                    cell2.innerHTML = value.totalpotholes;
+
+                    //var clone = template.clone(); //refer to template made above
+                    //clone it
+                    //update values
+                    //insert into DOM
+                    //clone.find("h2").text(value.pub_date); //we then modify the text of H2 before pushing into header
+                    //clone.find("p:ea(0)")
+
+                    //template.parent().append(clone); //we append the row, the template we just made
+
+
+                });
+                console.log(result); //This prints out the OBJECTS, we can see it in CONSOLE and navigate. Comment this afterwards
+            }).fail(function(err) {
+                throw err;
+            });
+
+        });
+    </script>
+
+
+<h1>Part 3: Heatmap of Open Pothole requests</h1>
+
+
+
+    <!--Load the AJAX API-->
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        // Load the Visualization API and the corechart package.
+        google.charts.load('current', {
+            'packages': ['corechart']
+        });
+
+        // Set a callback to run when the Google Visualization API is loaded.
+        google.charts.setOnLoadCallback(drawChart);
+
+        // Callback that creates and populates a data table,
+        // instantiates the pie chart, passes in the data and
+        // draws it.
+        function drawChart() {
+
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Open requests');
+            data.addColumn('number', 'Community Area');
+
+
+
+
+
+
+            var url = "https://data.cityofchicago.org/resource/7as2-ds3y.json" +
+                "?$query=select%20community_area%2Ccount(*)%20as%20totalPotholes%20where%20status=%27open%27%20Group%20By%20community_area" + //note the jquery is similar to SQL (practically the same)
+                "%20order%20by%20community_area%20asc"; //part 2 of sql
+
+            $.ajax({
+                url: url,
+                method: 'GET',
+            }).done(function(result) {
+                $.each(result, function(index, value) { //Jump down two object levels, and loop through end
+
+
+
+                    if (typeof value.community_area == "undefined") {
+                        data.addRow(
+                            ["-1", parseInt(value.totalpotholes)]
+                        );
+                    }
+                    else {
+                        data.addRow(
+                            [value.community_area.toString(), parseInt(value.totalpotholes)]
+                        );
+                    }
+
+                  
+                });
+                console.log(result); //This prints out the OBJECTS, we can see it in CONSOLE and navigate. Comment this afterwards
+
+                // Instantiate and draw our chart, passing in some options.
+                var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+            }).fail(function(err) {
+                throw err;
+            });
+
+
+            // Set chart options
+            var options = {
+                'title': 'Part 2 - Open requests',
+                'width': 800,
+                'height': 800
+            };
+
+
+            //Load Lib
+            //.ajax
+            //  DONE(fx(data)){
+
+
+            //Google API for headmap key
+            ////AIzaSyCqLIZl5IkdeevQsUNVu9BsZGJXDprfNZ8
+            //
+        }
+    </script>
+
+
+    <div id="floating-panel">
+        <button onclick="toggleHeatmap()">Toggle Heatmap</button>
+        <button onclick="changeGradient()">Change gradient</button>
+        <button onclick="changeRadius()">Change radius</button>
+        <button onclick="changeOpacity()">Change opacity</button>
+    </div>
+    <div id="map"></div>
+    <script>
+        // This example requires the Visualization library. Include the libraries=visualization
+        // parameter when you first load the API. For example:
+        // <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_API_KEY&libraries=visualization">
+
+        var map, heatmap;
+        var themPoints = (getAllPoints());
+        
+        function initMap() {
+            
+            
+            
+            map = new google.maps.Map(document.getElementById('map'), {
+                zoom: 10,
+                center: {
+                    lat: 41.7712,
+                    lng: -87.64821483438856
+                },
+                mapTypeId: 'satellite'
+            });
+
+            
+            
+        }
+
+
+  
+        
+        
+        
+        
+        function getPointss() {
+            
+            return [
+                new google.maps.LatLng(37.782551, -122.445368),
+                new google.maps.LatLng(37.782745, -122.444586),
+                new google.maps.LatLng(37.782842, -122.443688),
+                new google.maps.LatLng(37.782919, -122.442815),
+                new google.maps.LatLng(37.782992, -122.442112),
+                new google.maps.LatLng(37.783100, -122.441461)
+            ]
+        }
+        
+        function getPoints(x, y) {
+            
+            return (new google.maps.LatLng(x, y));
+            
+        }
+        
+        
+        
+        
+        function getAllPoints()
+        {
+            var url = "https://data.cityofchicago.org/resource/7as2-ds3y.json" +
+                "?$query=select%20latitude%2Clongitude%20where%20status=%27open%27" + //note the jquery is similar to SQL (practically the same)
+                "%20order%20by%20latitude%2Clongitude%20asc"; //part 2 of sql
+            
+            
+            var latLongObject = [];
+            
+            
+            $.ajax({
+                url: url,
+                method: 'GET',
+            }).done(function(result) {
+                $.each(result, function(index, value) { //Jump down two object levels, and loop through end
+                    latLongObject.push(getPoints(parseFloat(value.latitude), parseFloat(value.longitude)));
+            
+                });
+                console.log(latLongObject); //This prints out the OBJECTS, we can see it in CONSOLE and navigate. Comment this afterwards
+                //console.log(getPointss());
+                
+                heatmap = new google.maps.visualization.HeatmapLayer({
+                data: latLongObject,
+                map: map
+            });
+                
+                
+                return getPointss();
+                
+            }).fail(function(err) {
+                throw err;
+            });
+        }
+          
+
+
+
+        function toggleHeatmap() {
+            heatmap.setMap(heatmap.getMap() ? null : map);
+        }
+
+        function changeGradient() {
+            var gradient = [
+                'rgba(0, 255, 255, 0)',
+                'rgba(0, 255, 255, 1)',
+                'rgba(0, 191, 255, 1)',
+                'rgba(0, 127, 255, 1)',
+                'rgba(0, 63, 255, 1)',
+                'rgba(0, 0, 255, 1)',
+                'rgba(0, 0, 223, 1)',
+                'rgba(0, 0, 191, 1)',
+                'rgba(0, 0, 159, 1)',
+                'rgba(0, 0, 127, 1)',
+                'rgba(63, 0, 91, 1)',
+                'rgba(127, 0, 63, 1)',
+                'rgba(191, 0, 31, 1)',
+                'rgba(255, 0, 0, 1)'
+            ]
+            heatmap.set('gradient', heatmap.get('gradient') ? null : gradient);
+        }
+
+        function changeRadius() {
+            heatmap.set('radius', heatmap.get('radius') ? null : 20);
+        }
+
+        function changeOpacity() {
+            heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
+        }
+        
+    </script>
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqLIZl5IkdeevQsUNVu9BsZGJXDprfNZ8&libraries=visualization&callback=initMap">
+    </script>
+
+
+</body>
+
+</html>
