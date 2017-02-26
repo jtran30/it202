@@ -1,0 +1,787 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Project 3: By: Jonathan Tran</title>
+    <h1>Project 3: By Jonathan Tran</h1>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+
+
+    <link href='//fonts.googleapis.com/css?family=Orbitron' rel='stylesheet'>
+    <style>
+        #coolFont {
+            font-family: 'Orbitron';
+            src: url('//fonts.googleapis.com/css?family=Orbitron');
+        }
+    </style>
+
+    <style>
+        body {
+            background-color: #111;
+        }
+        
+        canvas {
+            background-color: #000;
+            z-index: 27;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+        }
+        
+        h1 {
+            color: #FFF;
+            font-family: Orbitron;
+            padding-left: 0;
+            padding-right: 0;
+            margin-left: auto;
+            margin-right: auto;
+            display: block;
+            text-align: center;
+        }
+         h2 {
+            color: #BBB;
+            font-family: Orbitron;
+            text-align: center;
+            display: block;
+            
+        }
+    </style>
+
+
+</head>
+
+<body>
+    <h2>Use the [Directional Keys] to move the player and [Space] to pause the game.</h2>
+    <h2>Avoid obstacles, and gather stars for points. Good luck.</h2>
+    <canvas id="myCanvas" width="900" height="400"></canvas>
+
+
+    <script>
+        var c = document.getElementById("myCanvas"); //target our canvas, draw circle
+        var ctx = c.getContext("2d");
+
+
+        var accelerateGame = 0; //used in intro into gamestart
+        var alphaCol = .8; //used mainly for the life -1 thing
+
+        var harmObjArr = [];
+        var parallaxObjArr = []; //Used to carry all the teeny tiny stars
+        var parallaxParticlesPlay = 90; //Modifies particles that appear in screen,100-(this val) = %chance
+        var textArr = []; //
+
+
+        var game = { //Act as enumerator for game states
+            welcomeScreen: 0,
+            menu: 1,
+            gamePlay: 2,
+            gamePause: 3,
+            gameLose: 4
+        };
+        var gameState = game.welcomeScreen; //set base game state
+
+
+        var img = new Image();
+        img.src = 'triangle.png';
+        var img2 = new Image();
+        img2.src = 'star.png';
+
+
+        var time = 0;
+        var doAnimation = 0;
+
+        var imgArr = []
+        var myImg = {
+            theImg: img,
+            x: 40,
+            y: myCanvas.height / 2 - 25,
+            w: 43,
+            h: 50,
+            xVel: 0,
+            yVel: 0,
+            health: 5,
+            score: 0,
+            colliding: false,
+            collecting: false
+        };
+
+        var collisionText = {
+            text: "Life -1",
+            text2: "Score +20!",
+            x: myCanvas.width / 10,
+            y: myCanvas.height,
+            y2: 10
+        }
+
+        var collectionText = {
+            text: "Score +20!",
+            x: myCanvas.width / 10,
+            y: 10
+        }
+        var welcomeText = {
+            text: "Welcome",
+            x: myCanvas.width / 2,
+            y: myCanvas.height / 2
+        };
+
+        var loseText = {
+            text: "YOU DIED",
+            x: myCanvas.width / 2,
+            y: myCanvas.height / 2
+        };
+
+        var promptText = {
+            text: "Click anywhere or press [Space] to begin",
+            x: myCanvas.width / 2,
+            y: myCanvas.height / 2
+        };
+
+        var promptText2 = {
+            text: "Click anywhere or press [Space] to retry.",
+            x: myCanvas.width / 2,
+            y: myCanvas.height / 2
+        };
+
+        var instructionText = {
+            text: "Use the [Directional Keys] to move the player.",
+            text2: "Press [Space] anytime to pause the game.",
+            text3: "Dodge the obstacles and collect the stars for points.",
+            text4: "Press [Space] to play",
+            x: myCanvas.width / 2,
+            y: myCanvas.height / 4,
+            y4: myCanvas.height / 6,
+            y2: myCanvas.height / 2.5,
+            y3: myCanvas.height / 1.25
+        };
+
+        function generateParallax(isEnemy) { //generate random values for the object to be created, then push into the list/array for draw function to handle
+            // var xPos = Math.random() * 6 + 1;
+
+            if (isEnemy == 0) { //Create background parallax stars
+                var yPos = Math.random() * myCanvas.height;
+                var width = Math.random() * 6 + 1;
+                var height = Math.random() * 2 + 1;
+
+                var parallaxObj = {
+                    x: myCanvas.width + width,
+                    y: yPos,
+                    w: width,
+                    h: height
+                };
+                parallaxObjArr.push(parallaxObj);
+            }
+            else {
+
+                var yPos = Math.random() * myCanvas.height;
+
+                if (isEnemy == 1) { //Create enemies
+
+                    var width = Math.random() * myCanvas.width / 25 + myCanvas.width / 50;
+                    var height = Math.random() * myCanvas.width / 25 + myCanvas.width / 50;
+                    var xVelocity = Math.random() * myCanvas.width / 200 + myCanvas.width / 250;
+                    var itCan = true;
+                    var colorRGBA = 'rgba(255, 0, 0, 1)';
+                }
+                else //Create yellow stars for points
+                {
+
+                    var width = 50;
+                    var height = 50;
+                    var itCan = false;
+                    var colorRGBA = 'rgba(255, 255, 255, 1)';
+                    var xVelocity = Math.random() * myCanvas.width / 200 + myCanvas.width / 250;
+
+                }
+
+                var harmObject = {
+                    x: myCanvas.width,
+                    y: yPos,
+                    w: width,
+                    h: height,
+                    xVel: xVelocity,
+                    yVel: 0,
+                    canHurt: itCan,
+                    collided: false,
+                    color: colorRGBA
+
+                };
+
+                harmObjArr.push(harmObject);
+            }
+            return;
+        } //end generateParallax
+
+
+
+
+        function drawParallaxParticles(arr) { // draw the teeny tiny stars
+            ctx.fillStyle = "#FFF";
+
+            for (i = 0; i < parallaxObjArr.length; i++) { //Run through each object and depending on its size, adjust speed it travels
+                if (parallaxObjArr[i].w * parallaxObjArr[i].h <= 21 && parallaxObjArr[i].w * parallaxObjArr[i].h > 16)
+                    parallaxObjArr[i].x -= myCanvas.width / (200 - accelerateGame);
+                else if (parallaxObjArr[i].w * parallaxObjArr[i].h <= 16 && parallaxObjArr[i].w * parallaxObjArr[i].h > 11)
+                    parallaxObjArr[i].x -= myCanvas.width / (400 - accelerateGame * 2);
+                else if (parallaxObjArr[i].w * parallaxObjArr[i].h <= 11 && parallaxObjArr[i].w * parallaxObjArr[i].h > 6)
+                    parallaxObjArr[i].x -= myCanvas.width / (900 - accelerateGame * 4.5);
+                else if (parallaxObjArr[i].w * parallaxObjArr[i].h <= 6 && parallaxObjArr[i].w * parallaxObjArr[i].h > 0)
+                    parallaxObjArr[i].x -= myCanvas.width / (1400 - accelerateGame * 5);
+
+
+                //draw the rect
+                ctx.fillRect(parallaxObjArr[i].x, parallaxObjArr[i].y, parallaxObjArr[i].w, parallaxObjArr[i].h);
+
+                //remove the object or "free" after it reaching the edge of the screen.
+                if (parallaxObjArr[i].x + parallaxObjArr[i].w < 0) {
+                    parallaxObjArr.splice(i, 1);
+                }
+
+            }
+        } //end drawParallaxParticles
+
+        function drawHarmObj(arr) { // draw deadly objects
+
+
+            for (i = 0; i < harmObjArr.length; i++) { //Run through each object and depending on its size, adjust speed it travels
+
+
+                if (harmObjArr[i].canHurt == true) { //if enemy
+                    ctx.fillStyle = harmObjArr[i].color;
+                    if (harmObjArr[i].w * harmObjArr[i].h > myCanvas.width * 1.2) //big objects move slower
+                    {
+                        harmObjArr[i].x -= (harmObjArr[i].xVel / 5) + difficultyPlusSpeed / 5;
+                    }
+                    else {
+                        harmObjArr[i].x -= harmObjArr[i].xVel + difficultyPlusSpeed;
+                    }
+                    //draw the rect
+                    ctx.fillRect(harmObjArr[i].x, harmObjArr[i].y, harmObjArr[i].w, harmObjArr[i].h);
+
+
+                }
+                else { //if star
+                    harmObjArr[i].x -= harmObjArr[i].xVel;
+                    ctx.drawImage(img2, harmObjArr[i].x, harmObjArr[i].y);
+
+                }
+                //remove the object or "free" after it reaching the edge of the screen.
+                if (harmObjArr[i].x + harmObjArr[i].w < 0) {
+                    harmObjArr.splice(i, 1);
+                }
+            }
+        } //end drawParallaxParticles
+
+
+
+
+
+        function textAnimate(obj, percentX, percentY, dir) {
+
+            if (dir == "up") {
+                if (percentY * myCanvas.height <= obj.y) {
+                    obj.y += -1 + (myCanvas.height * percentY - obj.y) / 50;
+                    return 1;
+                }
+                else {
+                    return 2;
+                }
+
+            }
+
+            if (dir == "down") {
+                if (percentY * myCanvas.height >= obj.y) {
+                    obj.y += 1 + (myCanvas.height * percentY - obj.y) / 50;
+                    return 1;
+                }
+                else {
+                    return 2;
+                }
+            }
+
+        }
+
+
+        function typeWriter(obj) {
+            i = 0;
+
+
+            i = time / 5;
+            if (i < obj.text.length + 10) {
+                ctx.fillText(obj.text.substring(0, i), obj.x, obj.y);
+                return 0;
+            }
+            else {
+                ctx.fillText(obj.text, obj.x, obj.y);
+                return 1;
+            }
+
+
+        }
+
+        function slowObj(obj) {
+            if (obj.yVel > 0) {
+                obj.yVel -= myCanvas.height / 100;
+            }
+            else if (obj.yVel < 0) {
+                obj.yVel += myCanvas.height / 100;
+            }
+
+        }
+
+        function moveObj(obj) {
+            //console.log(obj.yVel);
+            if (keyPresses.length >= 1) {
+                if (keyPresses[keyPresses.length - 1] == 38) //up, only get last key pressed
+                {
+                    if (obj.y <= 0) //wall collision
+                    {
+                        obj.yVel = 0;
+                    }
+                    else {
+                        obj.yVel = -1 * myCanvas.height / 100;
+                    }
+
+                }
+                else if (keyPresses[keyPresses.length - 1] == 40) //down, same as above
+                {
+                    if (obj.y + obj.h >= myCanvas.height) {
+                        obj.yVel = 0;
+                    }
+                    else {
+                        obj.yVel = myCanvas.height / 100;
+                    }
+                }
+            }
+            else if (keyPresses.length == 0) //if no keys pressed, then slow down obj to full stop
+            {
+                obj.yVel = 0;
+            }
+
+
+            if (keyPressesLR.length >= 1) {
+                if (keyPressesLR[keyPressesLR.length - 1] == 37) //left, only get last key pressed
+                {
+                    if (obj.x <= 0) //wall collision
+                    {
+                        obj.xVel = 0;
+                    }
+                    else {
+                        obj.xVel = -1 * myCanvas.width / 400;
+                    }
+
+                }
+                else if (keyPressesLR[keyPressesLR.length - 1] == 39) //right, same as above
+                {
+                    if (obj.x + obj.w >= myCanvas.width) {
+                        obj.xVel = 0;
+                    }
+                    else {
+                        obj.xVel = myCanvas.width / 200;
+                    }
+                }
+            }
+            else if (keyPressesLR.length == 0) //if no keys pressed, then slow down obj to full stop
+            {
+                obj.xVel = 0;
+            }
+
+            obj.x += obj.xVel;
+            obj.y += obj.yVel;
+
+            checkCollision(obj);
+
+        }
+
+        var removeAfterChecks = false;
+
+        function checkCollision(obj) {
+            for (i = 0; i < harmObjArr.length; i++) {
+                if (harmObjArr[i].collided == false) //only collide with the object once
+                {
+                    if (obj.x + obj.w / 2 > harmObjArr[i].x) { //check if righter bound is in contact 
+                        if (obj.x < harmObjArr[i].x + harmObjArr[i].w) { //check if left bound and above are contacted
+                            if (obj.y + obj.h > harmObjArr[i].y) { //check if lower bound and 2 above are contacted
+                                if (obj.y < harmObjArr[i].y + harmObjArr[i].h) { //check for upper bounds, if all 3 passed + this, then object has to be within the contact object
+                                    //console.log("collision1");
+
+                                    if (harmObjArr[i].canHurt == true) { //If this is an enemy
+                                        ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+                                        ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+                                        harmObjArr[i].collided = true;
+                                        obj.health--;
+                                        alphaCol = .8;
+                                        harmObjArr[i].color = 'rgba(255, 0, 0, 0.5)';
+                                        collisionText.x = myCanvas.width / 10;
+                                        collisionText.y = myCanvas.height;
+                                        obj.colliding = true;
+                                    }
+                                    else {
+                                        ctx.fillStyle = 'rgba(255, 215, 0, 0.5)';
+                                        ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+                                        obj.score += 20;
+                                        obj.collecting = true;
+                                        harmObjArr[i].collided = true;
+                                        collectionText.x = myCanvas.width / 10;
+                                        collectionText.y = 10;
+                                        alphaCol = .8;
+                                        removeAfterChecks = true;
+
+                                    }
+
+                                }
+                            }
+                        }
+                    }
+                }
+                if (harmObjArr[i].collided == false) //only collide with the object once
+                {
+                    if (obj.x + obj.w > harmObjArr[i].x) { //check if righter bound is in contact 
+                        if (obj.x + obj.w / 2 < harmObjArr[i].x + harmObjArr[i].w) { //check if left bound and above are contacted
+                            if (obj.y + obj.h * 0.6 > harmObjArr[i].y) { //check if lower bound and 2 above are contacted
+                                if (obj.y + obj.h * 0.4 < harmObjArr[i].y + harmObjArr[i].h) { //check for upper bounds, if all 3 passed + this, then object has to be within the contact object
+                                    //console.log("collision2");
+                                    if (harmObjArr[i].canHurt == true) { //If this is an enemy
+                                        ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+                                        ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+                                        harmObjArr[i].collided = true;
+                                        obj.health--;
+                                        alphaCol = .8;
+                                        harmObjArr[i].color = 'rgba(255, 0, 0, 0.5)';
+                                        collisionText.x = myCanvas.width / 10;
+                                        collisionText.y = myCanvas.height;
+                                        obj.colliding = true;
+                                    }
+                                    else {
+                                        ctx.fillStyle = 'rgba(255, 215, 0, 0.5)';
+                                        ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+                                        obj.score += 20;
+                                        obj.collecting = true;
+                                        harmObjArr[i].collided = true;
+                                        collectionText.x = myCanvas.width / 10;
+                                        collectionText.y = 10;
+                                        alphaCol = .8;
+                                        removeAfterChecks = true;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+                if (removeAfterChecks == true) { //Make sure no null pointer excepter occurs
+                    harmObjArr.splice(i, 1);
+                    removeAfterChecks = false;
+                }
+            }
+
+        } //end of checkCollision
+
+        function welcomeScreenFunct() {
+            ctx.font = "30px Orbitron";
+            ctx.fillStyle = "orange";
+            ctx.textAlign = "center";
+            //ctx.fillText("Hello World", myCanvas.width / 2, myCanvas.height / 2);
+
+            if (doAnimation == 0) {
+                doAnimation = typeWriter(welcomeText);
+            }
+            if (doAnimation == 1) {
+                ctx.fillText(welcomeText.text, welcomeText.x, welcomeText.y);
+                doAnimation = textAnimate(welcomeText, .5, .2, "up");
+            }
+            if (doAnimation == 2) { // display prompts
+                ctx.fillText(welcomeText.text, welcomeText.x, welcomeText.y);
+                if (time % 80 >= 0 && time % 80 < 40) {
+                    ctx.fillStyle = "white";
+                    ctx.fillText(promptText.text, promptText.x, promptText.y);
+                }
+            }
+            if (doAnimation == 3) { // display menu
+                ctx.fillStyle = "#50FF00"; //light green
+                ctx.fillText(instructionText.text, instructionText.x, instructionText.y);
+                ctx.fillText(instructionText.text2, instructionText.x, instructionText.y2);
+                ctx.fillStyle = "orange";
+                ctx.fillText(instructionText.text3, instructionText.x, instructionText.y3);
+
+                if (time % 80 >= 0 && time % 80 < 40) {
+                    ctx.fillStyle = "white";
+                    ctx.fillText(promptText.text, promptText.x, promptText.y);
+                }
+            }
+            if (doAnimation == 4) { //make cool accelerating stars effect, then transition into game
+                ctx.drawImage(myImg.theImg, myImg.x, myImg.y);
+
+                if (accelerateGame < 100) {
+                    accelerateGame += 1;
+                }
+
+                if (accelerateGame == 100) {
+                    gameState = game.gamePlay;
+                    parallaxParticlesPlay = 70;
+
+                    myImg.health = 5;
+                    myImg.score = 0;
+                }
+            }
+        } //end of welcomeScreenFunct
+
+
+        function numDigits(x) { //http://stackoverflow.com/questions/14879691/get-number-of-digits-with-javascript
+            return Math.max(Math.floor(Math.log10(Math.abs(x))), 0) + 1;
+        }
+
+        function drawHealthScore() {
+            ctx.font = "22px Orbitron";
+            ctx.fillStyle = "orange";
+            ctx.fillText("Pts: ", 35, 25);
+            ctx.fillStyle = "white";
+            ctx.fillText(myImg.score, 75 + numDigits(myImg.score) * 10, 25);
+            ctx.fillStyle = "orange";
+            ctx.fillText("Lives: ", 50, myCanvas.height - 10);
+            ctx.fillStyle = "#50FF00";
+            ctx.fillText(myImg.health, 120, myCanvas.height - 10);
+        }
+
+
+
+        function gameConstructor() //reset everything
+        {
+            difficultyPlus = 0;
+            difficultyPlusSpeed = 0;
+            accelerateGame = 100;
+            myImg.score = 0;
+            myImg.health = 5;
+            myImg.x = 20;
+            myImg.y = myCanvas.height / 2 - 25;
+
+            harmObjArr = [];
+
+            loseText.x = myCanvas.width / 2;
+            loseText.y = myCanvas.height / 2;
+        }
+
+        var difficultyPlus = 0;
+        var difficultyPlusSpeed = 0;
+
+        function drawGame() {
+            if (gameState != game.gamePause) { //Yeah pause the game when space is pressed
+
+                ctx.clearRect(0, 0, myCanvas.width, myCanvas.height); //Refresh screen
+
+                if (Math.ceil(Math.random() * 100) > parallaxParticlesPlay) { //Reduce the amount of particles generated.
+                    generateParallax(false);
+                }
+                drawParallaxParticles();
+
+
+
+                if (gameState == game.welcomeScreen) {
+                    welcomeScreenFunct();
+                } //end of gameState = welcomescreen
+
+                if (gameState == game.gamePlay) {
+                    if (time % 15 == 0) { //Add game score based on time
+                        myImg.score++;
+                    }
+                    if (myImg.score > 60 && difficultyPlus == 0) { //medium difficulty
+                        difficultyPlus = .5;
+                        accelerateGame += 15;
+                    }
+
+                    else if (myImg.score > 160 && difficultyPlus == .5) { //hard difficulty
+                        difficultyPlus = 1;
+                        accelerateGame += 15;
+                    }
+                    else if (myImg.score > 250 && difficultyPlus == 1) { //harder difficulty
+                        difficultyPlusSpeed = myCanvas.width / 250;
+
+                    }
+
+                    moveObj(myImg);
+                    ctx.drawImage(myImg.theImg, myImg.x, myImg.y);
+
+
+
+                    if (Math.ceil(Math.random() * 100) > 96 - difficultyPlus) { //Reduce the amount of particles generated.
+                        generateParallax(1); //Spawn enemy
+                    }
+                    if ((Math.random() * 100) > 99.6) { //Low chance for star to spawn
+                        generateParallax(2); //Spawn star
+                    }
+                    drawHarmObj();
+
+                    drawHealthScore();
+
+                    if (myImg.colliding == true) { //life-1 effect
+                        doAnimation = textAnimate(collisionText, .5, .5, "up");
+                        alphaCol -= .01;
+                        ctx.fillStyle = "rgba(255, 0, 0, " + alphaCol + ")";
+                        ctx.fillText(collisionText.text, collisionText.x, collisionText.y);
+                        if (doAnimation == 2) {
+                            collisionText.x = myCanvas.width / 10;
+                            collisionText.y = myCanvas.height;
+                            myImg.colliding = false;
+                            alphaCol = .8;
+                        }
+
+                    }
+
+                    if (myImg.collecting == true) { //points up effect
+                        doAnimation = textAnimate(collectionText, .5, .3, "down");
+                        alphaCol -= .01;
+                        ctx.fillStyle = "rgba(255, 215, 0, " + alphaCol + ")";
+                        ctx.fillText(collectionText.text, collectionText.x, collectionText.y);
+                        if (doAnimation == 2) {
+                            collectionText.x = myCanvas.width / 10;
+                            collectionText.y = myCanvas.height;
+                            myImg.collecting = false;
+                            alphaCol = .8;
+                        }
+
+                    }
+                    if (myImg.health <= 0) {
+                        gameState = game.gameLose;
+                        doAnimation = 0;
+                        time = 0;
+                    }
+
+                } //end of gameState = gamePlay
+
+                if (gameState == game.gameLose) {
+                    ctx.fillStyle = 'rgba(255, 0, 0, 0.3)';
+                    ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+                    drawHarmObj();
+                    drawHealthScore();
+
+
+                    if (doAnimation == 0) {
+                        ctx.fillStyle = "red";
+                        doAnimation = typeWriter(loseText);
+                    }
+                    if (doAnimation == 1) {
+                        ctx.fillStyle = "red";
+                        ctx.fillText(loseText.text, loseText.x, loseText.y);
+                        doAnimation = textAnimate(loseText, .5, .2, "up");
+                    }
+                    if (doAnimation == 2) { // display prompts
+                        ctx.fillStyle = "red";
+                        ctx.fillText(loseText.text, loseText.x, loseText.y);
+                        if (time % 80 >= 0 && time % 80 < 40) {
+                            ctx.fillStyle = "white";
+                            ctx.fillText(promptText2.text, promptText2.x, promptText2.y);
+                        }
+
+
+                    }
+
+                } //end of gameState = gameLose
+
+                time++;
+                requestAnimationFrame(drawGame); //call the function recursively
+            } //end of if pause
+            else {
+                ctx.fillStyle = 'rgba(128, 128, 128, 0.3)';
+                ctx.fillRect(0, 0, myCanvas.width, myCanvas.height);
+            }
+        }
+
+
+        myCanvas.addEventListener('click', function() {
+            if (gameState == game.welcomeScreen) {
+                if (doAnimation == 3) {
+                    doAnimation = 4;
+                }
+                if (doAnimation == 2) {
+                    doAnimation = 3;
+                }
+            }
+            if (gameState == game.gameLose) {
+                if (doAnimation == 2) {
+                    gameConstructor();
+                    gameState = game.gamePlay;
+                }
+            }
+
+        }, false);
+
+        window.addEventListener("load", function() { //need this as well to update
+            drawGame(); //recursive 
+        });
+
+
+
+
+        var keyPresses = []; //GLOBAL, array for the e.keycode presses, up down only
+        var keyPressesLR = []; //GLOBAL, array for the e.keycode presses, left right only
+
+        document.onkeydown = function(e) { //Key presses
+            switch (e.keyCode) {
+                case 32: // spacebar
+                    if (gameState == game.welcomeScreen) {
+                        if (doAnimation == 3) {
+                            doAnimation = 4;
+                        }
+                        if (doAnimation == 2) {
+                            doAnimation = 3;
+                        }
+                    }
+
+                    if (gameState == game.gameLose) {
+                        if (doAnimation == 2) {
+                            gameConstructor();
+                            gameState = game.gamePlay;
+                        }
+
+                        break;
+                    }
+
+                    if (gameState == game.gamePlay) {
+                        gameState = game.gamePause;
+                        break;
+                    }
+
+                    if (gameState == game.gamePause) {
+                        gameState = game.gamePlay;
+                        time++;
+                        requestAnimationFrame(drawGame); //since our time has stopped, we needa reboot it
+                        break;
+                    }
+                    break;
+                case 38: // up
+                    if (keyPresses.indexOf(38) == -1) //only push if the direction doesn't exist in the array
+                        keyPresses.push(e.keyCode);
+
+                    break;
+                case 40: // down
+                    if (keyPresses.indexOf(40) == -1)
+                        keyPresses.push(e.keyCode);
+
+                    break;
+                case 37: // left
+                    if (keyPressesLR.indexOf(37) == -1)
+                        keyPressesLR.push(e.keyCode);
+
+                    break;
+                case 39: // right
+                    if (keyPressesLR.indexOf(39) == -1)
+                        keyPressesLR.push(e.keyCode);
+
+                    break;
+            }
+        }
+
+        document.onkeyup = function(e) {
+
+            var index = keyPresses.indexOf(e.keyCode); //get last key released, and remove it from the array
+            var index2 = keyPressesLR.indexOf(e.keyCode); //get last key released, and remove it from the array
+            if (e.keyCode == 38 || e.keyCode == 40)
+                keyPresses.splice(index, 1); //as of over here
+            if (e.keyCode == 37 || e.keyCode == 39)
+                keyPressesLR.splice(index2, 1);
+        }
+    </script>
+</body>
+
+</html>
