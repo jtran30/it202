@@ -252,7 +252,7 @@
                     ctx.fillStyle = harmObjArr[i].color;
                     if (harmObjArr[i].w * harmObjArr[i].h > myCanvas.width * 1.2) //big objects move slower
                     {
-                        harmObjArr[i].x -= (harmObjArr[i].xVel / 5) + difficultyPlusSpeed / 5;
+                        harmObjArr[i].x -= (harmObjArr[i].xVel / 5);
                     }
                     else {
                         harmObjArr[i].x -= harmObjArr[i].xVel + difficultyPlusSpeed;
@@ -587,12 +587,12 @@
                     }
                     if (myImg.score > 60 && difficultyPlus == 0) { //medium difficulty
                         difficultyPlus = .5;
-                        accelerateGame += 15;
+                        accelerateGame = 110;
                     }
 
                     else if (myImg.score > 160 && difficultyPlus == .5) { //hard difficulty
                         difficultyPlus = 1;
-                        accelerateGame += 15;
+                        accelerateGame = 120;
                     }
                     else if (myImg.score > 250 && difficultyPlus == 1) { //harder difficulty
                         difficultyPlusSpeed = myCanvas.width / 250;
