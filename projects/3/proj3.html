@@ -689,6 +689,8 @@
 
 
         myCanvas.addEventListener('click', function() {
+            
+            
             if (gameState == game.welcomeScreen) {
                         if (doAnimation == 3) {
                             doAnimation = 4;
@@ -707,17 +709,7 @@
                         
                     }
 
-                    if (gameState == game.gamePlay) {
-                        gameState = game.gamePause;
-                        
-                    }
-
-                    if (gameState == game.gamePause) {
-                        gameState = game.gamePlay;
-                        time++;
-                        requestAnimationFrame(drawGame); //since our time has stopped, we needa reboot it
-                        
-                    }
+                    
             
             
         }, false);
