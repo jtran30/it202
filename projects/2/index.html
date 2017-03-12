@@ -6,13 +6,9 @@
 
 
     <style>
-    
-    h1{
-        font-family: "comic sans", Roboto;
-        
-    }
-    
-    
+        h1 {
+            font-family: "comic sans", Roboto;
+        }
         /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
         
@@ -29,6 +25,7 @@
             height: 100%;
             margin: 0;
             padding: 0;
+            background-color: #BBB;
         }
         
         #floating-panel {
@@ -59,12 +56,18 @@
 
 <body>
     <!--Div that will hold the pie chart-->
-    <h1>Part 2: Pie chart of open pothole requests</h1>
-    <div id="chart_div"></div>
+    <h1 style="margin: auto; width: 50%;">Part 2: Pie chart of open pothole requests</h1>
+    <div id="chart_div" style="margin: auto; width: 50%;"></div>
 
-    <h1>Part 1: Table of total potholes by community area</h1>
+    <h1 style="margin: auto; width: 50%;">Part 1: Table of total potholes by community area</h1>
 
+    <table id="myTable">
+        <tr>
+            <th>Community Area</th>
+            <th>Potholes</th>
+        </tr>
 
+    </table>
 
     <style>
         table {
@@ -86,13 +89,7 @@
     </style>
 
 
-    <table id="myTable">
-        <tr>
-            <th>Community Area</th>
-            <th>Potholes</th>
-        </tr>
 
-    </table>
 
 
 
@@ -154,7 +151,7 @@
     </script>
 
 
-<h1>Part 3: Heatmap of Open Pothole requests</h1>
+    <h1>Part 3: Heatmap of Open Pothole requests</h1>
 
 
 
@@ -207,7 +204,7 @@
                         );
                     }
 
-                  
+
                 });
                 console.log(result); //This prints out the OBJECTS, we can see it in CONSOLE and navigate. Comment this afterwards
 
@@ -238,13 +235,13 @@
         }
     </script>
 
-
-    <div id="floating-panel">
+    <div style="margin: auto; width: 50%;">
         <button onclick="toggleHeatmap()">Toggle Heatmap</button>
         <button onclick="changeGradient()">Change gradient</button>
         <button onclick="changeRadius()">Change radius</button>
         <button onclick="changeOpacity()">Change opacity</button>
     </div>
+
     <div id="map"></div>
     <script>
         // This example requires the Visualization library. Include the libraries=visualization
@@ -253,11 +250,11 @@
 
         var map, heatmap;
         var themPoints = (getAllPoints());
-        
+
         function initMap() {
-            
-            
-            
+
+
+
             map = new google.maps.Map(document.getElementById('map'), {
                 zoom: 10,
                 center: {
@@ -267,18 +264,18 @@
                 mapTypeId: 'satellite'
             });
 
-            
-            
+
+
         }
 
 
-  
-        
-        
-        
-        
+
+
+
+
+
         function getPointss() {
-            
+
             return [
                 new google.maps.LatLng(37.782551, -122.445368),
                 new google.maps.LatLng(37.782745, -122.444586),
@@ -288,51 +285,50 @@
                 new google.maps.LatLng(37.783100, -122.441461)
             ]
         }
-        
+
         function getPoints(x, y) {
-            
+
             return (new google.maps.LatLng(x, y));
-            
+
         }
-        
-        
-        
-        
-        function getAllPoints()
-        {
+
+
+
+
+        function getAllPoints() {
             var url = "https://data.cityofchicago.org/resource/7as2-ds3y.json" +
                 "?$query=select%20latitude%2Clongitude%20where%20status=%27open%27" + //note the jquery is similar to SQL (practically the same)
                 "%20order%20by%20latitude%2Clongitude%20asc"; //part 2 of sql
-            
-            
+
+
             var latLongObject = [];
-            
-            
+
+
             $.ajax({
                 url: url,
                 method: 'GET',
             }).done(function(result) {
                 $.each(result, function(index, value) { //Jump down two object levels, and loop through end
-                if(value.latitude != undefined || value.longitude != undefined)
-                    latLongObject.push(getPoints(parseFloat(value.latitude), parseFloat(value.longitude)));
-                
+                    if (value.latitude != undefined || value.longitude != undefined)
+                        latLongObject.push(getPoints(parseFloat(value.latitude), parseFloat(value.longitude)));
+
                 });
                 //console.log(latLongObject); //This prints out the OBJECTS, we can see it in CONSOLE and navigate. Comment this afterwards
                 //console.log(getPointss());
-                
+
                 heatmap = new google.maps.visualization.HeatmapLayer({
-                data: latLongObject,
-                map: map
-            });
-                
-                
+                    data: latLongObject,
+                    map: map
+                });
+
+
                 return getPointss();
-                
+
             }).fail(function(err) {
                 throw err;
             });
         }
-          
+
 
 
 
@@ -367,9 +363,8 @@
         function changeOpacity() {
             heatmap.set('opacity', heatmap.get('opacity') ? null : 0.2);
         }
-        
     </script>
-    
+
     <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdmfSwsqPA52lDcIP-axuLDELfuxKa-Wc&libraries=visualization&callback=initMap">
     </script>
 
