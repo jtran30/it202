@@ -186,7 +186,7 @@
 
             var url = "https://data.cityofchicago.org/resource/7as2-ds3y.json" +
                 "?$query=select%20community_area%2Ccount(*)%20as%20totalPotholes%20where%20status=%27open%27%20Group%20By%20community_area" + //note the jquery is similar to SQL (practically the same)
-                "%20order%20by%20community_area%20asc"; //part 2 of sql
+                "%20order%20by%20count(*)%20asc"; //part 2 of sql
 
             $.ajax({
                 url: url,
@@ -313,10 +313,11 @@
                 method: 'GET',
             }).done(function(result) {
                 $.each(result, function(index, value) { //Jump down two object levels, and loop through end
+                if(value.latitude != undefined || value.longitude != undefined)
                     latLongObject.push(getPoints(parseFloat(value.latitude), parseFloat(value.longitude)));
-            
+                
                 });
-                console.log(latLongObject); //This prints out the OBJECTS, we can see it in CONSOLE and navigate. Comment this afterwards
+                //console.log(latLongObject); //This prints out the OBJECTS, we can see it in CONSOLE and navigate. Comment this afterwards
                 //console.log(getPointss());
                 
                 heatmap = new google.maps.visualization.HeatmapLayer({
@@ -368,7 +369,8 @@
         }
         
     </script>
-    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCqLIZl5IkdeevQsUNVu9BsZGJXDprfNZ8&libraries=visualization&callback=initMap">
+    
+    <script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCdmfSwsqPA52lDcIP-axuLDELfuxKa-Wc&libraries=visualization&callback=initMap">
     </script>
 
 
