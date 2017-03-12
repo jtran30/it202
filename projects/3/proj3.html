@@ -688,23 +688,7 @@
         }
 
 
-        myCanvas.addEventListener('click', function() {
-            if (gameState == game.welcomeScreen) {
-                if (doAnimation == 3) {
-                    doAnimation = 4;
-                }
-                if (doAnimation == 2) {
-                    doAnimation = 3;
-                }
-            }
-            if (gameState == game.gameLose) {
-                if (doAnimation == 2) {
-                    gameConstructor();
-                    gameState = game.gamePlay;
-                }
-            }
-
-        }, false);
+        myCanvas.addEventListener('click', function() {}, false);
 
         window.addEventListener("load", function() { //need this as well to update
             drawGame(); //recursive 
