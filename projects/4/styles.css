@@ -190,6 +190,9 @@ footer p {
   color: black !important;
 }
 
+.borderbox {
+  background-color: rgba(105,100,100,0.8);
+}
 
 
 .demo-blog .theDodge .mdl-card__media {
@@ -224,7 +227,7 @@ footer p {
 (max-width: 1024px) and (-webkit-max-device-pixel-ratio: 1.5),
 (max-width: 1024px) and (max-resolution: 1.5dppx) {
   body::before {
-    background-image: url('images/bg_1024.jpg');
+    background-image: url('images/clouds2.jpg');
   }
 }
 
@@ -233,7 +236,7 @@ footer p {
 (min-width: 1025px) and (max-width: 2048px) and (-webkit-max-device-pixel-ratio: 1.5),
 (min-width: 1025px) and (max-width: 2048px) and (max-resolution: 1.5dppx) {
   body::before {
-    background-image: url('images/bg_2048.jpg');
+    background-image: url('images/clouds2.jpg');
   }
 }
 
@@ -242,7 +245,7 @@ footer p {
 (min-width: 2049px) and (-webkit-max-device-pixel-ratio: 1.5),
 (min-width: 2049px) and (max-resolution: 1.5dppx) {
   body::before {
-    background-image: url('images/bg_2880.jpg');
+    background-image: url('images/clouds2.jpg');
   }
 }
 
@@ -453,7 +456,7 @@ body .demo-blog {
 }
 
 .demo-blog .on-the-road-again .mdl-card__media {
-  background-image: url('images/road.jpg');
+  background-image: url('images/clouds.jpg');
 }
 
 .demo-blog .shopping .mdl-card__media {
@@ -530,7 +533,7 @@ body .demo-blog {
 }
 
 .demo-blog--blogpost .demo-blog__posts>.mdl-card .mdl-card__media {
-  background-image: url('images/road_big.jpg');
+  background-image: url('images/clouds.jpg');
   height: 280px;
 }
 
