@@ -1,0 +1,10 @@
+{
+  "name": "Project 5: 3 Useful things",
+  "short_name": "Project 5",
+  
+  "start_url": "./project5.html?homescreen=1",
+  "display": "standalone"
+  
+}
+
+

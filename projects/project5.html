@@ -1,0 +1,783 @@
+<!doctype html>
+<!--
+  
+-->
+<html lang="en">
+
+<head>
+    <title>Proj 5: Useful things</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel=manifest href=./manifest.json>
+
+</head>
+
+<body>
+    <!-- Uses a transparent header that draws on top of the layout's background -->
+    <style>
+        body {
+            background-color: rgb(45, 45, 45);
+        }
+        
+        .demo-layout-transparent {
+            /* background: url('../assets/demos/transparent.jpg') center / cover;  */
+        }
+        
+        .demo-layout-transparent .mdl-layout__header,
+        .demo-layout-transparent .mdl-layout__drawer-button {
+            /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+            color: white;
+        }
+        
+        .mdl-navigation__link {
+            transition: width 1s, font-size 1s;
+        }
+        
+        .topHeaderLink {
+            border-right: solid rgb(45, 45, 45);
+            text-align: center;
+            font-size: 20px;
+            width: 120px;
+            background-color: rgba(90, 90, 90, .8);
+            transition: background-color .3s, color .2s, width 2s, font-size 2s;
+            overflow: hidden;
+            cursor: pointer;
+        }
+        
+        .mdl-navigation__link:hover {
+            background-color: rgba(150, 150, 150, .9);
+        }
+        
+        @media only screen and (max-width: 1024px) and (min-width: 680px) {
+            .mdl-layout__header {
+                display: block;
+            }
+            .mdl-navigation__link {
+                position: center;
+                width: 90px;
+                font-size: 18px;
+            }
+        }
+        
+        @media only screen and (max-width: 680px) and (min-width: 450px) {
+            .mdl-layout__header {
+                display: block;
+            }
+            .mdl-navigation__link {
+                width: 100%;
+                font-size: 16px;
+            }
+        }
+        
+        @media only screen and (max-width: 450px) and (min-width: 0px) {
+            .topHeader {
+                display: none;
+            }
+        }
+        
+        .mdl-navigation__link:active {
+            background: white;
+            transition-property: none;
+            color: black;
+        }
+        
+        .center {
+            position: absolute;
+            left: 5%;
+            top: 15%;
+            width: 90%;
+            text-align: center;
+            border: 3px solid white;
+            transition: width 5s, height 1.5s, background-color 1s, color 1s;
+            height: 75%;
+            z-index: 665;
+        }
+        
+        .centerTab2 {
+            height: 400%;
+            z-index: 665;
+            color: white;
+            background-color: rgba(90, 90, 90, .8);
+        }
+        
+        .tab1 {
+            z-index: 666;
+            width: 100%;
+            height: 100%;
+        }
+        
+        table.Chart {
+            border-collapse: collapse;
+            border: 1px solid #a5d63f;
+            margin-bottom: 25px;
+            width: 90%;
+        }
+        
+        tbody {
+            display: table-row-group;
+            vertical-align: middle;
+            border-color: inherit;
+        }
+        
+        tr {
+            display: table-row;
+            vertical-align: inherit;
+            border-color: inherit;
+        }
+        
+        th {
+            border-collapse: collapse;
+            border: 1px solid #a5d63f;
+            padding: 3px;
+            margin: 0;
+            font-size: 11px;
+        }
+        
+        .Chart th {
+            min-height: 60px;
+        }
+        
+        .Chart td,
+        .Chart th {
+            border-collapse: collapse;
+            border: 1px solid gray;
+            padding: 3px;
+            margin: 0;
+            font-size: 16px;
+        }
+        
+        th Strong {
+            color: rgb(210, 210, 140);
+        }
+        
+        tr th {
+            color: rgb(210, 160, 140);
+        }
+        
+        tr td {
+            color: rgb(210, 210, 210);
+        }
+        
+        h2 {
+            text-align: center;
+            width: 90%;
+            color: rgb(240, 230, 180);
+        }
+        
+        .center2 {
+            position: absolute;
+            left: 10%;
+            width: 90%;
+            text-align: center;
+            transition: width 5s, height 2.5s;
+            height: 100%;
+            z-index: 667;
+        }
+        
+        .center3 {
+            position: absolute;
+            top: 30%;
+            left: 0%;
+            width: 100%;
+            text-align: center;
+            transition: width 5s, height 2.5s, color .25s, font-size .25s;
+            height: 100%;
+            color: rgba(255, 255, 255, 1);
+            z-index: 667;
+        }
+        
+        .mdl-layout__drawer.is-visible {
+            z-index: 999;
+            width: 30%;
+        }
+        
+        .center3.animateText {
+            transition: width 5s, height 2.5s, color .01s, font-size .01s;
+            color: rgba(255, 255, 255, .5);
+            font-size: 18px;
+            
+        }
+        
+        
+        
+    </style>
+
+    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+        <header class="mdl-layout__header mdl-layout__header--transparent">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <span id="timeTitle" class="mdl-layout-title">Hi</span>
+                <!-- Add spacer, to align navigation to the right -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- Navigation -->
+                <nav class="mdl-navigation topHeader">
+
+                    <p id="link1" class="mdl-navigation__link topHeaderLink">Dress Tie</p>
+                    <p id="link2" class="mdl-navigation__link topHeaderLink">Food Units</p>
+                    <p id="link3" class="mdl-navigation__link topHeaderLink" >Jokes</p>
+                    <p id="link4" class="mdl-navigation__link topHeaderLink" >About</p>
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">Menu</span>
+            <nav class="mdl-navigation">
+                <p id="link1" class="mdl-navigation__link ">Dress Tie</p>
+                <p id="link2" class="mdl-navigation__link ">Food Units</p>
+                <p id="link3" class="mdl-navigation__link " href="">Jokes</p>
+                <p id="link4" class="mdl-navigation__link " >About</p>
+                <h3 class="center3" style="color: gray; top: 80%">By: Jonathan Tran</h3>
+            </nav>
+        </div>
+        <main class="mdl-layout__content">
+        </main>
+    </div>
+
+
+    <div id="displayField" class="center">
+
+        <div class="tab1">
+            <h5 id="myText" style="color: white">How-To Tie your tie</h5>
+            <iframe id="video1ID" style="height: 85%" src="https://www.youtube.com/embed/HXJx8j7JpKY?rel=0&enablejsapi=1&start=30" frameborder="0" allowfullscreen></iframe>
+        </div>
+
+        <div class="tab2 center2">
+            <h2>Measurements Conversion Chart</h2>
+            <table class="Chart">
+                <tbody>
+                    <tr>
+                        <th colspan="2"><strong>US Dry Volume Measurements</strong></th>
+                    </tr>
+                    <tr>
+                        <th>MEASURE</th>
+                        <th>EQUIVALENT</th>
+                    </tr>
+                    <tr>
+                        <td>1/16 teaspoon </td>
+                        <td> dash</td>
+                    </tr>
+                    <tr>
+                        <td>1/8 teaspoon </td>
+                        <td> a pinch</td>
+                    </tr>
+                    <tr>
+                        <td>3 teaspoons </td>
+                        <td> 1 Tablespoon</td>
+                    </tr>
+                    <tr>
+                        <td>1/8 cup </td>
+                        <td> 2 tablespoons (= 1 standard coffee scoop)</td>
+                    </tr>
+                    <tr>
+                        <td>1/4 cup </td>
+                        <td> 4 Tablespoons</td>
+                    </tr>
+                    <tr>
+                        <td>1/3 cup </td>
+                        <td> 5 Tablespoons plus 1 teaspoon</td>
+                    </tr>
+                    <tr>
+                        <td>1/2 cup </td>
+                        <td> 8 Tablespoons</td>
+                    </tr>
+                    <tr>
+                        <td>3/4 cup </td>
+                        <td> 12 Tablespoons</td>
+                    </tr>
+                    <tr>
+                        <td>1 cup </td>
+                        <td> 16 Tablespoons</td>
+                    </tr>
+                    <tr>
+                        <td>1 Pound </td>
+                        <td> 16 ounces</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2"><strong>US liquid volume measurements</strong></th>
+                    </tr>
+                    <tr>
+                        <td>8 Fluid ounces </td>
+                        <td> 1 Cup</td>
+                    </tr>
+                    <tr>
+                        <td>1 Pint </td>
+                        <td> 2 Cups (= 16 fluid ounces)</td>
+                    </tr>
+                    <tr>
+                        <td>1 Quart </td>
+                        <td> 2 Pints (= 4 cups)</td>
+                    </tr>
+                    <tr>
+                        <td>1 Gallon </td>
+                        <td> 4 Quarts (= 16 cups)</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">US to Metric Conversions </th>
+                    </tr>
+                    <tr>
+                        <td>1/5 teaspoon </td>
+                        <td> 1 ml (ml stands for milliliter, one thousandth of a liter)</td>
+                    </tr>
+                    <tr>
+                        <td>1 teaspoon </td>
+                        <td> 5 ml</td>
+                    </tr>
+                    <tr>
+                        <td>1 tablespoon </td>
+                        <td> 15 ml</td>
+                    </tr>
+                    <tr>
+                        <td>1 fluid oz. </td>
+                        <td> 30 ml</td>
+                    </tr>
+                    <tr>
+                        <td>1/5 cup </td>
+                        <td> 50 ml</td>
+                    </tr>
+                    <tr>
+                        <td>1 cup </td>
+                        <td> 240 ml</td>
+                    </tr>
+                    <tr>
+                        <td>2 cups (1 pint) </td>
+                        <td> 470 ml</td>
+                    </tr>
+                    <tr>
+                        <td>4 cups (1 quart) </td>
+                        <td> .95 liter</td>
+                    </tr>
+                    <tr>
+                        <td>4 quarts (1 gal.) </td>
+                        <td> 3.8 liters</td>
+                    </tr>
+                    <tr>
+                        <td>1 oz. </td>
+                        <td> 28 grams</td>
+                    </tr>
+                    <tr>
+                        <td>1 pound </td>
+                        <td> 454 grams</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Metric to US Conversions </th>
+                    </tr>
+                    <tr>
+                        <td>1 milliliter </td>
+                        <td>1/5 teaspoon</td>
+                    </tr>
+                    <tr>
+                        <td>5 ml </td>
+                        <td>1 teaspoon</td>
+                    </tr>
+                    <tr>
+                        <td>15 ml </td>
+                        <td>1 tablespoon</td>
+                    </tr>
+                    <tr>
+                        <td>30 ml </td>
+                        <td>1 fluid oz.</td>
+                    </tr>
+                    <tr>
+                        <td>100 ml </td>
+                        <td>3.4 fluid oz.</td>
+                    </tr>
+                    <tr>
+                        <td>240 ml </td>
+                        <td>1 cup</td>
+                    </tr>
+                    <tr>
+                        <td>1 liter </td>
+                        <td>34 fluid oz.</td>
+                    </tr>
+                    <tr>
+                        <td>1 liter </td>
+                        <td>4.2 cups</td>
+                    </tr>
+                    <tr>
+                        <td>1 liter </td>
+                        <td>2.1 pints</td>
+                    </tr>
+                    <tr>
+                        <td>1 liter </td>
+                        <td>1.06 quarts</td>
+                    </tr>
+                    <tr>
+                        <td>1 liter </td>
+                        <td>.26 gallon</td>
+                    </tr>
+                    <tr>
+                        <td>1 gram </td>
+                        <td>.035 ounce</td>
+                    </tr>
+                    <tr>
+                        <td>100 grams </td>
+                        <td>3.5 ounces</td>
+                    </tr>
+                    <tr>
+                        <td>500 grams </td>
+                        <td>1.10 pounds</td>
+                    </tr>
+                    <tr>
+                        <td>1 kilogram </td>
+                        <td>2.205 pounds</td>
+                    </tr>
+                    <tr>
+                        <td>1 kilogram </td>
+                        <td>35 oz.</td>
+                    </tr>
+                    <tr>
+                        <th colspan="2">Pan Size Equivalents</th>
+                    </tr>
+                    <tr>
+                        <td>9-by-13-inches baking dish </td>
+                        <td>22-by-33-centimeter baking dish</td>
+                    </tr>
+                    <tr>
+                        <td>8-by-8-inches baking dish </td>
+                        <td>20-by-20-centimeter baking dish</td>
+                    </tr>
+                    <tr>
+                        <td>9-by-5-inches loaf pan </td>
+                        <td>23-by-12-centimeter loaf pan (=8 cups or 2 liters in capacity)</td>
+                    </tr>
+                    <tr>
+                        <td>10-inch tart or cake pan </td>
+                        <td>25-centimeter tart or cake pan</td>
+                    </tr>
+                    <tr>
+                        <td>9-inch cake pan </td>
+                        <td>22-centimeter cake pan</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h2>Oven Temperature Conversions</h2>
+            <table class="Chart">
+                <tbody>
+                    <tr>
+                        <th>Farenheit</th>
+                        <th>Celsius</th>
+                        <th>Gas Mark</th>
+                    </tr>
+                    <tr>
+                        <td>275º F </td>
+                        <td>140º C </td>
+                        <td>gas mark 1-cool</td>
+                    </tr>
+                    <tr>
+                        <td>300º F </td>
+                        <td>150º C </td>
+                        <td>gas mark 2</td>
+                    </tr>
+                    <tr>
+                        <td>325º F </td>
+                        <td>165º C </td>
+                        <td>gas mark 3-very moderate</td>
+                    </tr>
+                    <tr>
+                        <td>350º F </td>
+                        <td>180º C </td>
+                        <td>gas mark 4-moderate</td>
+                    </tr>
+                    <tr>
+                        <td>375º F </td>
+                        <td>190º C </td>
+                        <td>gas mark 5</td>
+                    </tr>
+                    <tr>
+                        <td>400º F </td>
+                        <td>200º C </td>
+                        <td>gas mark 6-moderately hot</td>
+                    </tr>
+                    <tr>
+                        <td>425º F </td>
+                        <td>220º C </td>
+                        <td>gas mark 7- hot</td>
+                    </tr>
+                    <tr>
+                        <td>450º F </td>
+                        <td>230º C </td>
+                        <td>gas mark 9</td>
+                    </tr>
+                    <tr>
+                        <td>475º F </td>
+                        <td>240º C </td>
+                        <td>gas mark 10- very hot</td>
+                    </tr>
+                </tbody>
+            </table>
+            <h2>Ratios for selected foods</h2>
+            <table class="Chart">
+                <tbody>
+                    <tr>
+                        <th>Measure</th>
+                        <th colspan="3">Equivalents</th>
+                    </tr>
+                    <tr>
+                        <th colspan="4">Butter</th>
+                    </tr>
+                    <tr>
+                        <td>1 T.<br /> 1 stick </td>
+                        <td>14 grams<br /> 4 ounces=113 grams
+                        </td>
+                        <td>1 Tablespoon<br /> 8 tablespoons </td>
+                        <td>
+                            ½ cup</td>
+                    </tr>
+                    <tr>
+                        <td>4 sticks </td>
+                        <td> 16 ounces=452 grams
+                        </td>
+                        <td> 32 tablespoons </td>
+                        <td> 2 cups</td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">Lemon</th>
+                    </tr>
+                    <tr>
+                        <td>1 lemon </td>
+                        <td> 1 to 3 tablespoons juice, 1 to 1½ teaspoons grated zest</td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>4 large lemons </td>
+                        <td> 1 cup juice </td>
+                        <td> ¼ cup grated zest</td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">Chocolate</th>
+                    </tr>
+                    <tr>
+                        <td>1 ounce </td>
+                        <td> ¼ cup grated 40 grams
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>6 ounces chips </td>
+                        <td> 1 cup chips 160 grams
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>cocoa powder
+                        </td>
+                        <td> 1 cup 115 grams
+                        </td>
+                        <td>
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <th colspan="4">Creams</th>
+                    </tr>
+                    <tr>
+                        <td>Half and half</td>
+                        <td> ½ milk ½ cream </td>
+                        <td> 10.5 to 18 % butterfat</td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Light cream </td>
+                        <td>
+                        </td>
+                        <td>18 % butterfat
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Light whipping cream </td>
+                        <td>
+                        </td>
+                        <td>26-30 % butterfat
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Heavy cream </td>
+                        <td> whipping cream </td>
+                        <td> 36 % or more butterfat</td>
+                        <td>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Double cream </td>
+                        <td> extra-thick double cream,<br /> Clotted or Devonshire
+                        </td>
+                        <td> 42 % butterfat
+                        </td>
+                        <td>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <h2>Measures for Pans and Dishes</h2>
+            <table class="Chart">
+                <tbody>
+                    <tr>
+                        <th>Inches</th>
+                        <th>Centimeters</th>
+                    </tr>
+                    <tr>
+                        <td>9-by-13-inches baking dish</td>
+                        <td>22-by-33-centimeter baking dish</td>
+                    </tr>
+                    <tr>
+                        <td>8-by-8-inches baking dish</td>
+                        <td>20-by-20-centimeter baking dish</td>
+                    </tr>
+                    <tr>
+                        <td>9-by-5-inches loaf pan (8 cups in capacity)</td>
+                        <td>23-by-12-centimeter loaf pan (2 liters in capacity)</td>
+                    </tr>
+                    <tr>
+                        <td>10-inch tart or cake pan</td>
+                        <td>25-centimeter tart or cake pan</td>
+                    </tr>
+                    <tr>
+                        <td>9-inch cake pan</td>
+                        <td>22-centimeter cake pan</td>
+                    </tr>
+                </tbody>
+            </table>
+            
+            <a style="text-decoration: underline;" target="_blank" href="http://startcooking.com/measurement-and-conversion-charts">SOURCE: http://startcooking.com/measurement-and-conversion-charts</a>
+        </div>
+
+
+        <div class="tab3">
+            <h3 id="jokeText" class="center3">Loading...</h3>
+            <a style="text-decoration: underline;" target="_blank" href="http://www.icndb.com/api/">SOURCE: http://www.icndb.com/api/</a>
+        </div>
+        
+        
+        <div class="tab4">
+            <h3 class="center3">Yo this is Jon Tran's 3 useful things page. Specifically for project 5 of IT202.</h3>
+        </div>
+    </div>
+
+
+
+
+
+
+    <script>
+        $(".tab1").show();
+        $(".tab2").hide();
+        $(".tab3").hide();
+        $(".tab4").hide();
+
+        $(window).click(function(e) { //Handle click events
+            if (e.target.id == "link1") {
+                $(".tab1").show();
+                $(".tab2").hide();
+                $(".tab3").hide();
+                $(".tab4").hide();
+                $("#displayField").removeClass('centerTab2');
+                document.getElementById('video1ID').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+            }
+            else if (e.target.id == "link2") {
+                $(".tab1").hide();
+                $(".tab2").show();
+                $(".tab3").hide();
+                $(".tab4").hide();
+                $("#displayField").addClass('centerTab2');
+                document.getElementById('video1ID').contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+
+            }
+            else if (e.target.id == "link3") {
+                $(".tab1").hide();
+                $(".tab2").hide();
+                $(".tab3").show();
+                $(".tab4").hide();
+                $("#displayField").removeClass('centerTab2');
+                document.getElementById('video1ID').contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+
+                var url = "https://api.icndb.com/jokes/random";
+
+                $.ajax({
+                    url: url,
+                    method: 'GET',
+                }).done(function(result) {
+                    $.each(result, function(index, value) {
+                        document.getElementById('jokeText').innerHTML = value.joke;
+                        $(".center3").addClass("animateText");
+                        
+                    });
+                    //console.log(result); 
+                }).fail(function(err) {
+                    throw err;
+                });
+            }
+            else if(e.target.id == "link4"){
+                $(".tab4").show();
+                $(".tab1").hide();
+                $(".tab2").hide();
+                $(".tab3").hide();
+                document.getElementById('video1ID').contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+            }
+        });
+        
+        $(".center3").bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function() {
+                            console.log("ahsdasbdj");
+                            
+                            $(".center3").removeClass("animateText");
+                            
+                        });
+    </script>
+
+
+
+    <script>
+        function startTime() {
+            var amPM = "AM";
+            var today = new Date();
+            var h = today.getHours();
+
+            if (h == 0) {
+                h = 12;
+                amPM = "AM";
+            }
+            else if (h >= 12 && h <= 23) {
+                amPM = "PM";
+            }
+            if (h >= 13 && h <= 23) {
+                h = h - 12;
+            }
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('timeTitle').innerHTML =
+                h + ":" + m + ":" + s + " " + amPM;
+            var t = setTimeout(startTime, 500);
+        }
+
+        function checkTime(i) {
+            if (i < 10) {
+                i = "0" + i
+            }; // add zero in front of numbers < 10
+            return i;
+        }
+
+        startTime();
+    </script>
+</body>
+
+
+</html>
