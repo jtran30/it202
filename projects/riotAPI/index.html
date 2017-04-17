@@ -1,0 +1,1215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.0 Transitional//EN">
+<!--
+  https://css-tricks.com/controlling-css-animations-transitions-javascript/
+-->
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>League'em</title>
+    <link rel="icon" href="img/favicon.ico">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <link rel=manifest href=./manifest.json>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <script src="https://unpkg.com/dexie@latest/dist/dexie.js"></script>
+    <style>
+        @font-face {
+            font-family: FrizQuadrata;
+            src: url("font/Friz Quadrata Std Medium.otf") format("opentype");
+        }
+        
+        body {
+            display: none;
+        }
+        
+        body {
+            background-color: rgb(45, 45, 45);
+            background-image: url('img/wallpaper.jpg');
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            background-position: center;
+        }
+        
+        .demo-layout-transparent {
+            /* background: url('../assets/demos/transparent.jpg') center / cover;  */
+        }
+        
+        .demo-layout-transparent .mdl-layout__header,
+        .demo-layout-transparent .mdl-layout__drawer-button {
+            /* This background is dark, so we set text to white. Use 87% black instead if
+     your background is light. */
+            color: white;
+        }
+        
+        .mdl-navigation__link {
+            transition: width 1s, font-size 1s;
+        }
+        
+        .topHeaderLink {
+            height: 100px;
+            border-right: solid rgb(45, 45, 45);
+            text-align: center;
+            font-size: 20px;
+            width: 150px;
+            background-color: rgba(90, 90, 90, .8);
+            transition: background-color .3s, color .2s, width 2s, font-size 2s;
+            cursor: pointer;
+            margin-top: 50px;
+        }
+        
+        p#link1,
+        #link2,
+        #link3,
+        #link4 {
+            line-height: 100px;
+        }
+        
+        .leagueemLogo {
+            width: 350px;
+        }
+        
+        .mdl-navigation__link:hover {
+            background-color: rgba(150, 150, 150, .9);
+        }
+        
+        @media only screen and (max-width: 1100px) and (min-width: 800px) {
+            .leagueemLogo {
+                width: 250px;
+            }
+            .mdl-layout__header {
+                display: block;
+            }
+            .mdl-navigation__link {
+                position: center;
+                width: 90px;
+                font-size: 13px;
+            }
+        }
+        
+        @media only screen and (max-width: 800px) and (min-width: 670px) {
+            .leagueemLogo {
+                width: 140px;
+            }
+            .mdl-layout__header {
+                display: block;
+            }
+            .mdl-navigation__link {
+                width: 80px;
+                font-size: 12px;
+            }
+        }
+        
+        @media only screen and (max-width: 670px) and (min-width: 0px) {
+            .leagueemLogo {
+                display: none;
+            }
+            .mdl-layout__header {
+                display: block;
+            }
+            .mdl-navigation__link {
+                position: center;
+                width: 80px;
+                font-size: 12px;
+            }
+        }
+        
+        .center {
+            position: absolute;
+            left: 5%;
+            top: 200px;
+            width: 90%;
+            text-align: center;
+            border: 3px solid white;
+            transition: width 5s, height 1.5s, background-color 1s, color 1s;
+            height: 75%;
+            z-index: 665;
+        }
+        
+        .mdl-navigation__link:active {
+            background: white;
+            transition-property: none;
+            color: black;
+        }
+        
+        .extendTab {
+            height: 110%;
+            margin-bottom: 100px;
+            z-index: 665;
+            color: white;
+            background-color: rgba(90, 90, 90, .3);
+        }
+        
+        .centerTab2 {
+            height: 40%;
+            z-index: 665;
+            color: white;
+            background-color: rgba(90, 90, 90, .3);
+        }
+        
+        .tab1 {
+            z-index: 666;
+            width: 100%;
+            height: 100%;
+        }
+        
+        h2 {
+            text-align: center;
+            width: 90%;
+            color: rgb(240, 230, 180);
+        }
+        
+        .center2 {
+            position: absolute;
+            left: 10%;
+            width: 90%;
+            text-align: center;
+            transition: width 5s, height 2.5s;
+            height: 100%;
+            z-index: 667;
+        }
+        
+        .center3 {
+            position: absolute;
+            top: 30%;
+            left: 0%;
+            width: 100%;
+            text-align: center;
+            transition: width 5s, height 2.5s, color .25s, font-size .25s;
+            height: 100%;
+            color: rgba(255, 255, 255, 1);
+            z-index: 667;
+        }
+        
+        .center3a {
+            position: absolute;
+            top: 50px;
+            left: 5%;
+            width: 90%;
+            text-align: center;
+            transition: width 5s, height 2.5s, color .25s, font-size .25s;
+            height: 80%;
+            color: rgba(255, 255, 255, 1);
+            z-index: 667;
+        }
+        
+        .mdl-layout__drawer.is-visible {
+            z-index: 999;
+            width: 30%;
+        }
+        
+        .center3.animateText {
+            transition: width 5s, height 2.5s, color .01s, font-size .01s;
+            color: rgba(255, 255, 255, .5);
+            font-size: 18px;
+        }
+        
+        .darkSelectedTab {
+            background-color: rgba(60, 60, 60, .9);
+        }
+        
+        .fieldFont {
+            font-family: FrizQuadrata;
+            overflow: hidden;
+            width: 40%;
+            height: 60px;
+            font-size: 23px;
+            color: rgba(255, 200, 50, 1);
+            background-color: rgba(150, 150, 150, .9);
+            transition: background-color .3s;
+        }
+        
+        @media only screen and (max-width: 670px) and (min-width: 0px) {
+            .fieldFont {
+                font-size: 90%;
+            }
+        }
+        
+         ::-webkit-input-placeholder {
+            /* WebKit, Blink, Edge */
+            color: rgba(212, 175, 55, .7);
+            transition: color .3s;
+        }
+        
+        input:focus::-webkit-input-placeholder {
+            /* WebKit, Blink, Edge */
+            color: rgba(212, 175, 55, .4);
+        }
+        
+        input:focus:-moz-placeholder {
+            /* Mozilla Firefox 4 to 18 */
+            color: rgba(212, 175, 55, .4);
+        }
+        
+         ::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            color: rgba(212, 175, 55, .7);
+        }
+        
+        input:focus::-moz-placeholder {
+            /* Mozilla Firefox 19+ */
+            color: rgba(212, 175, 55, .2);
+        }
+        
+         :-ms-input-placeholder {
+            /* Internet Explorer 10-11 */
+            color: rgba(212, 175, 55, .7);
+        }
+        
+        .summonerName {
+            position: absolute;
+            text-align: left;
+            left: 20px;
+            top: 30px;
+            width: 100%;
+            font-size: 45px;
+            font-family: FrizQuadrata;
+            color: rgb(212, 175, 55);
+            font-weight: bold;
+        }
+        
+        .summonerIcon {
+            position: absolute;
+            left: 20px;
+            top: 80px;
+            width: 100px;
+        }
+        
+        .tableSingleSummoner {
+            position: absolute;
+            left: 0%;
+            top: 50px;
+            width: 90%;
+        }
+        
+        .tableSingleSummoner th {
+            height: 50px;
+            text-align: center;
+        }
+        
+        #formSummoner {
+            position: absolute;
+            top: 120px;
+            right: 1px;
+            width: 40%;
+            z-index: 666;
+            transition: width 1s;
+        }
+        
+        @media only screen and (max-width: 670px) and (min-width: 0px) {
+            #formSummoner {
+                width: 85%;
+            }
+        }
+        
+        #formSummoner #searchField {
+            width: 78%;
+            background-color: rgba(25, 25, 50, .8);
+            border: 3px solid #696969;
+            border-radius: 100px;
+            text-align: center;
+            transition: background-color .5s, border .5s;
+        }
+        
+        #formSummoner #searchField:hover {
+            background-color: rgba(20, 20, 50, .9);
+            box-shadow: 0 0 0 3pt #000;
+            border: 3px solid #808080;
+            outline: none;
+        }
+        
+        #formSummoner #searchField:focus {
+            width: 78%;
+            background-color: rgba(15, 15, 55, 1);
+            box-shadow: 0 0 0 2pt #000;
+            border: 3px solid #202020;
+            outline: none;
+        }
+        
+        #formSummoner #searchButton {
+            width: 19%;
+            height: 50px;
+            background-color: rgba(200, 200, 200, .4);
+            box-shadow: 0 0 0 2pt rgb(212, 175, 55);
+            font-family: FrizQuadrata;
+            color: rgb(0, 0, 55);
+            font-weight: bold;
+            transition: background-color .2s;
+        }
+        
+        #formSummoner #searchButton:hover {
+            background-color: rgba(200, 200, 200, .5);
+            color: rgb(25, 25, 155);
+        }
+        
+        #rankTag {
+            position: absolute;
+            font-size: 30px;
+            left: 20px;
+            top: 200px;
+            font-family: FrizQuadrata;
+            color: #ADFF2F;
+        }
+        
+        #summonerSoloRank {
+            position: absolute;
+            text-align: center;
+            font-size: 24px;
+            left: 40px;
+            top: 270px;
+        }
+        
+        #summonerFlexRank {
+            position: absolute;
+            text-align: center;
+            font-size: 24px;
+            left: 40px;
+            top: 320px;
+        }
+        
+        #summonerFlexTTRank {
+            position: absolute;
+            text-align: center;
+            font-size: 24px;
+            left: 40px;
+            top: 370px;
+        }
+        
+        #myTable tr #titleTable {
+            background-color: rgba(25, 25, 50, .8);
+            color: rgb(212, 175, 55);
+        }
+        
+        #myTable tr {
+            font-family: FrizQuadrata;
+            color: #ADFF2F;
+        }
+        
+        #myTable tr:nth-child(odd) {
+            background-color: rgba(100, 100, 100, .4);
+        }
+        
+        #myTable tr:nth-child(even) {
+            background-color: rgba(100, 100, 100, .7);
+        }
+        
+        #myTable table {
+            font-family: arial, sans-serif;
+            border-collapse: collapse;
+            width: 100%;
+        }
+        
+        #myTable td,
+        th {
+            border: 1px solid #dddddd;
+            text-align: center;
+            padding: 8px;
+        }
+    </style>
+</head>
+
+<body background="img/wallpaper.jpg">
+    <div class="demo-layout-transparent mdl-layout mdl-js-layout">
+        <header class="mdl-layout__header mdl-layout__header--transparent">
+            <div class="mdl-layout__header-row">
+                <!-- Title -->
+                <!--<span id="timeTitle" class="mdl-layout-title">Hi</span>-->
+                <a href="index.html"><img class="leagueemLogo" src="img/leagueem.png" alt="leagueem" width="220px" style="padding-top: 50px"></img>
+                </a>
+                <!-- Add spacer, to align navigation to the right -->
+                <div class="mdl-layout-spacer"></div>
+                <!-- Navigation -->
+                <nav class="mdl-navigation topHeader">
+
+
+
+                    <p id="link1" class="mdl-navigation__link topHeaderLink">Individual</p>
+                    <p id="link3" class="mdl-navigation__link topHeaderLink">Top Mastery</p>
+                    <p id="link2" class="mdl-navigation__link topHeaderLink">Search History</p>
+                    <p id="link4" class="mdl-navigation__link topHeaderLink">About</p>
+
+                </nav>
+            </div>
+        </header>
+        <div class="mdl-layout__drawer">
+            <span class="mdl-layout-title">Menu</span>
+            <nav class="mdl-navigation">
+                <p id="link1" class="mdl-navigation__link ">Individuale</p>
+                <p id="link3" class="mdl-navigation__link ">Top Mastery</p>
+                <p id="link2" class="mdl-navigation__link ">Search History</p>
+                <p id="link4" class="mdl-navigation__link ">About</p>
+                <h3 class="center3" style="color: gray; top: 80%">By: Jonathan Tran</h3>
+            </nav>
+        </div>
+        <main class="mdl-layout__content">
+        </main>
+    </div>
+
+    <form id="formSummoner" onsubmit="searchSummoner(); return false">
+        <input id="searchField" autocapitalize="off" autocomplete="on" spellcheck="false" autocorrect="off" class="fieldFont" type="text" placeholder="Enter Summoner Name">
+        <input id="searchButton" type="button" value="Search" onclick="searchSummoner()">
+    </form>
+
+    <div id="displayField" class="center">
+
+        <div id="tab1content" class="tab1">
+            <img id="loadingGif" src="img/loading.gif"></img>
+            <h3 id="helpText" class="center3">Enter the summoner name into the top right search field to search for players. Ex: "Wsl Dakoto", or "Wsl Melonchan"</h3>
+        </div>
+
+        <div class="tab2 center2">
+            <div id="displayName">
+                <img id="loadingGif2" src="img/loading.gif"></img>
+
+                <table id="myTable" class="tableSingleSummoner">
+                    <tr>
+                        <th id="titleTable">Name</th>
+                        <th colspan="3" width="50px" id="titleTable">Ranks</th>
+                    </tr>
+                    <tr>
+                        <th id="titleTable"></th>
+                        <th id="titleTable">Solo 5v5</th>
+                        <th id="titleTable">Flex 5v5</th>
+                        <th id="titleTable">Flex 3v3</th>
+                    </tr>
+                </table>
+
+            </div>
+        </div>
+
+        <div class="tab3">
+            <div id="chart_div" class="center3a"></div>
+        </div>
+
+
+        <div class="tab4">
+            <h3 class="center3">My name is Jonathan Tran, a computer science student, developed this app.</h3>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+    <script>
+        //This grouping is to handle clicking of the tabs on the header tag.
+        //These run at run time, when it's ready, initialize all the neccesary things. Note all the hides.
+        var key = 'RGAPI-76c0289e-fcda-4972-8a83-78d03b263f82';
+        $(document).ready(function() {
+            $("#loadingGif").hide();
+            $("#loadingGif2").hide();
+            $(".tab1").show();
+            $(".tab2").hide();
+            $(".tab3").hide();
+            $(".tab4").hide();
+            $("#link1").addClass("darkSelectedTab");
+            $("body").show();
+            $("#searchField").focus();
+
+
+            $(window).click(function(e) { //Handle click events
+                if (e.target.id == "link1") { //Link 1 correlates to tab1, and so on.
+                    $(".tab1").show();
+                    $("#link1").addClass("darkSelectedTab"); //Make darker for the selected tab.
+                    $("#link2").removeClass("darkSelectedTab");
+                    $("#link3").removeClass("darkSelectedTab");
+                    $("#link4").removeClass("darkSelectedTab");
+                    $(".tab2").hide();
+                    $(".tab3").hide();
+                    $(".tab4").hide();
+                    $("#displayField").removeClass('centerTab2'); //Centertab is just a placeholder for a extended tab.
+                    //document.getElementById('video1ID').contentWindow.postMessage('{"event":"command","func":"playVideo","args":""}', '*');
+                }
+                else if (e.target.id == "link2") {
+                    $(".tab2").show();
+                    $("#link1").removeClass("darkSelectedTab");
+                    $("#link2").addClass("darkSelectedTab");
+                    $("#link3").removeClass("darkSelectedTab");
+                    $("#link4").removeClass("darkSelectedTab");
+                    $(".tab1").hide();
+                    $(".tab3").hide();
+                    $(".tab4").hide();
+                    $("#displayField").addClass('centerTab2');
+                    //document.getElementById('video1ID').contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+
+                    refreshTab2();
+
+                }
+                else if (e.target.id == "link3") {
+                    $(".tab3").show();
+                    $("#link1").removeClass("darkSelectedTab");
+                    $("#link2").removeClass("darkSelectedTab");
+                    $("#link3").addClass("darkSelectedTab");
+                    $("#link4").removeClass("darkSelectedTab");
+                    $(".tab1").hide();
+                    $(".tab2").hide();
+                    $(".tab4").hide();
+                    $("#displayField").removeClass('centerTab2');
+                    //document.getElementById('video1ID').contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+
+
+                    /*
+
+                    var url = "https://api.icndb.com/jokes/random";
+
+                    $.ajax({
+                        url: url,
+                        method: 'GET',
+                    }).done(function(result) {
+                        $.each(result, function(index, value) {
+                            document.getElementById('jokeText').innerHTML = value.joke;
+                            $(".center3").addClass("animateText");
+                        });
+                        //console.log(result); 
+                    }).fail(function(err) {
+                        throw err;
+                    });
+                    
+                    */
+    
+                    if($("#searchField").val() == "")
+                    {
+                        alert("Please type a Summoner Name in the text field and search before clicking onto this tab.");
+                    }
+                    else{
+                        refreshTab3();
+                    }
+                    
+
+
+                }
+                else if (e.target.id == "link4") {
+                    $(".tab4").show();
+                    $("#link1").removeClass("darkSelectedTab");
+                    $("#link2").removeClass("darkSelectedTab");
+                    $("#link3").removeClass("darkSelectedTab");
+                    $("#link4").addClass("darkSelectedTab");
+                    $(".tab1").hide();
+                    $(".tab2").hide();
+                    $(".tab3").hide();
+                    //document.getElementById('video1ID').contentWindow.postMessage('{"event":"command","func":"stopVideo","args":""}', '*');
+                }
+            });
+
+            $(".center3").bind("transitionend webkitTransitionEnd oTransitionEnd MSTransitionEnd", function() {
+                $(".center3").removeClass("animateText");
+            });
+        });
+
+        function refreshTab2() {
+            var db = new Dexie("temp_searches"); //Init db for usage.
+            db.version(1).stores({
+                summoners: 'name, id, profileIconId, revisionDate ,rank, mastery'
+            });
+
+            $("#myTable").remove();
+
+            var tableHeadersStr = "<table id='myTable' class='tableSingleSummoner'><tr><th id='titleTable'>Name</th><th colspan='3'" +
+                "width='50px' id='titleTable'>Ranks</th></tr><tr><th id='titleTable'></th><th id='titleTable'>Solo 5v5</th>" +
+                "<th id='titleTable'>Flex 5v5</th><th id='titleTable'>Flex 3v3</th></tr></table>";
+
+            $("#displayName").append(tableHeadersStr);
+            db.summoners.each(function(data) {
+                var table = document.getElementById("myTable"); //grab table id
+                var row = table.insertRow(-1); //add to END
+                var col1 = row.insertCell(0); //to that row, add cells for col #
+                var col2a = row.insertCell(1);
+                var col2b = row.insertCell(1);
+                var col2c = row.insertCell(1);
+                col1.innerHTML = data.name; //name
+
+                try {
+                    col2a.innerHTML = data.rank[data.id][0].tier; //solo
+                    col2b.innerHTML = data.rank[data.id][1].tier; //flex 5v5
+                    col2c.innerHTML = data.rank[data.id][2].tier; //flex 3v3
+                }
+                catch (err) {}
+
+            });
+
+            window.setTimeout(function() { //Adjust centerTab2 height to be as tall as the table
+                $(".centerTab2").css("height", 100 + $("#myTable tbody").outerHeight());
+            }, 200);
+
+        }
+
+        function refreshTab3() {
+            var db = new Dexie("temp_searches"); //Init db for usage.
+            db.version(1).stores({
+                summoners: 'name, id, profileIconId, revisionDate ,rank, mastery'
+            });
+
+            // Load the Visualization API and the corechart package.
+            google.charts.load('current', {
+                'packages': ['corechart']
+            });
+
+            // Set a callback to run when the Google Visualization API is loaded.
+            google.charts.setOnLoadCallback(drawChart);
+
+            // Callback that creates and populates a data table,
+            // instantiates the pie chart, passes in the data and
+            // draws it.
+
+        }
+
+
+        function drawChart() {
+            // Create the data table.
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Champion');
+            data.addColumn('number', 'Champion Mastery Points');
+
+            var db = new Dexie("temp_searches"); //Init db for usage.
+            db.version(1).stores({
+                summoners: 'name, id, profileIconId, revisionDate ,rank, mastery'
+            });
+            var options = {
+                'title': 'Top 3 Champion Mastery',
+            };
+            var entry = $("#searchField").val();
+            var blockName = entry.replace(/\s/g, '').toLocaleLowerCase(); //This will be the string used in another certain api call.
+            console.log(blockName);
+            db.summoners.each(function(datas) {
+                
+                if (datas.name == blockName) {
+                    try {
+                       
+                        data.addRow([datas.mastery[0].championId.toString(), parseInt(datas.mastery[0].championPoints)]);
+                        data.addRow([datas.mastery[1].championId.toString(), parseInt(datas.mastery[1].championPoints)]);
+                        data.addRow([datas.mastery[2].championId.toString(), parseInt(datas.mastery[2].championPoints)]);
+                        // Instantiate and draw our chart, passing in some options.
+
+                    }
+                    catch (err) {
+                        throw err
+                    }
+
+                }
+                else{
+                    
+                }
+            });
+
+
+            window.setTimeout(function() { //Wait for response
+                var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                chart.draw(data, options);
+                console.log("test");
+            }, 400);
+
+
+
+
+            /*
+                        var url = "https://data.cityofchicago.org/resource/7as2-ds3y.json" +
+                            "?$query=select%20community_area%2Ccount(*)%20as%20totalPotholes%20where%20status=%27open%27%20Group%20By%20community_area" + //note the jquery is similar to SQL (practically the same)
+                            "%20order%20by%20count(*)%20asc"; //part 2 of sql
+
+                        $.ajax({
+                            url: url,
+                            method: 'GET',
+                        }).done(function(result) {
+                            $.each(result, function(index, value) { //Jump down two object levels, and loop through end
+
+
+
+                                if (typeof value.community_area == "undefined") {
+                                    data.addRow(
+                                        ["-1", parseInt(value.totalpotholes)]
+                                    );
+                                }
+                                else {
+                                    data.addRow(
+                                        [value.community_area.toString(), parseInt(value.totalpotholes)]
+                                    );
+                                }
+
+
+                            });
+                            console.log(result); //This prints out the OBJECTS, we can see it in CONSOLE and navigate. Comment this afterwards
+
+                            // Instantiate and draw our chart, passing in some options.
+                            var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
+                            chart.draw(data, options);
+                        }).fail(function(err) {
+                            throw err;
+                        });
+
+            */
+
+        }
+
+        document.onkeydown = function(e) { //Key presses reinitialize the color of the textfield (just for appearance).
+            $("#searchField").css("background-color", "rgba(25, 25, 50, .8)"); //if works, make the color back to default
+            $("#searchField").attr("placeholder", "Enter Summoner Name");
+        }
+
+
+        function displayIconName(data) {
+            //If it passed the above then create tags for the elements to go into.
+            var summonerNameStr = "<p id='summonerName' class='summonerName'>" + $("#searchField").val() + "</p>";
+            var summonerIcon2 = "https://lkimg.zamimg.com/images/v2/summoner/icons/size64x64/" + data.profileIconId + ".png";
+            //var summonerIcon = 'http://avatar.leagueoflegends.com/na/';
+            var summonerIconStr = "<img id='summonerIcon' class='summonerIcon' src='" + summonerIcon2 + "'></img>";
+            $("#tab1content").append(summonerIconStr);
+            $("#tab1content").append(summonerNameStr);
+        }
+
+        function renableSearch() { //This is called because the search button and textfield are disabled when used (to prevent mutliple unecessary calls to the API). This renables it
+            window.setTimeout(function() { //This will only happen after 2 seconds.
+                $("#searchField").prop('disabled', false);
+                $("#searchButton").prop('disabled', false);
+            }, 2000);
+
+        }
+
+        function summonerNotFound(errorStr) { //Give error prompt to the user in the text field.
+            $("#searchField").css("background-color", "rgba(255,0,0,.2)");
+            $("#searchField").val("");
+            $("#searchField").attr("placeholder", errorStr);
+            $
+            if (errorStr != "Invalid Summoner Name") {
+                renableSearch();
+            }
+            else {
+                $("#searchField").prop('disabled', false);
+                $("#searchButton").prop('disabled', false);
+            }
+
+        }
+
+        function getRankColor(data) { //Rankings in this game has a special color with them. Return this color.
+            var color = "#FFF";
+
+            if (data.tier == "BRONZE") {
+                color = "#CD7F32";
+            }
+            else if (data.tier == "SILVER") {
+                color = "#A9A9A9";
+            }
+            else if (data.tier == "GOLD") {
+                color = "#FFD700";
+            }
+            else if (data.tier == "PLATINUM") {
+                color = "#A1BEB4";
+            }
+            else if (data.tier == "DIAMOND") {
+                color = "#b9f2ff";
+            }
+            else if (data.tier == "MASTER") {
+                color = "#b9f2ff; background-color: #A9A9A9";
+            }
+            else if (data.tier == "CHALLENGER") {
+                color = "#b9f2ff; background-color: #DAA520";
+            }
+            else {
+                color = "#FFF"; //fallback color
+            }
+
+            return color;
+        }
+
+        function displaySoloRank(data) { //This and the bottom 3 are to display 3 ranks relevant to the game itself.
+            var summonerSoloRank = data.tier;
+            var division = data.entries[0].division;
+            var color = "#fff";
+            color = getRankColor(data);
+            var summonerSoloRankStr = "<p id='summonerSoloRank' class='summonerSoloRank' style='color: " + color + "'>" + "• Solo Rank Current Season: " + summonerSoloRank + " " + division + "</p>";
+            $("#tab1content").append(summonerSoloRankStr);
+        }
+
+        function displayFlexSR(data) {
+            var summonerFlexRank = data.tier;
+            var division = data.entries[0].division;
+            var color = "#fff";
+            color = getRankColor(data);
+            var summonerFlexRankStr = "<p id='summonerFlexRank' class='summonerFlexRank' style='color: " + color + "'>" + "• Flex Rift Rank Current Season: " + summonerFlexRank + " " + division + "</p>";
+            $("#tab1content").append(summonerFlexRankStr);
+        }
+
+        function displayFlexTT(data) {
+            var summonerFlexRank = data.tier;
+            var division = data.entries[0].division;
+            var color = "#fff";
+            color = getRankColor(data);
+            var summonerFlexRankStr = "<p id='summonerFlexTTRank' class='summonerFlexTTRank' style='color: " + color + "'>" + "• Flex Treeline Rank Current Season: " + summonerFlexRank + " " + division + "</p>";
+            $("#tab1content").append(summonerFlexRankStr);
+        }
+
+
+        function displayAllRanks(data, summonerId) { //Calls above functions if the bottom 3 if's do find any rank info, else none.
+            var rankTag = "<h3 id='rankTag' class='rankTag'>" + "Rankings: " + "</h3>";
+            $("#tab1content").append(rankTag);
+
+            $.each(data[summonerId], function(i, v) {
+                if (data[summonerId][i].queue == "RANKED_SOLO_5x5") {
+                    displaySoloRank(v)
+                }
+                else if (data[summonerId][i].queue == "RANKED_FLEX_SR") {
+                    displayFlexSR(v)
+                }
+                else if (data[summonerId][i].queue == "RANKED_FLEX_TT") {
+                    displayFlexTT(v)
+                }
+            });
+
+
+        }
+
+        function refreshDisplayField() { //When making a new search, do this always, so there's no overlapping things.
+            $("#summonerIcon").remove();
+            $("#summonerName").remove();
+            $("#summonerSoloRank").remove();
+            $("#summonerFlexRank").remove();
+            $("#summonerFlexTTRank").remove();
+            $("#displayField").removeClass("extendTab");
+            $("#searchField").prop('disabled', true);
+            $("#searchButton").prop('disabled', true);
+            $("#helpText").remove();
+            $("#rankTag").remove();
+        }
+
+
+
+
+        function searchSummoner() { //Search for the summoner and do any of the above functions if neccesary.
+            refreshDisplayField();
+
+            var db = new Dexie("temp_searches"); //Init db for usage.
+            db.version(1).stores({
+                summoners: 'name, id, profileIconId, revisionDate ,rank, mastery'
+            });
+
+
+
+
+            var getSummoner = 'https://na.api.pvp.net/lol/summoner/v3/summoners/by-name/';
+            var getRank = 'https://na.api.riotgames.com/api/lol/NA/v2.5/league/by-summoner/';
+            var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
+
+
+            var validateEntry = $("#searchField").val(); //Validate if the search has any bs characters that the game doesn't even allow the first place (reduces the amount of garbage API calls).
+            if (validateEntry.length < 3 || validateEntry.length > 16 || validateEntry.search(/[\,\.\/\;\'\[\]\\\-\=\`\<\>\?\:\"\{\}\|\_\+\~\!\@\#\$\%\^\&\*\(\)]/gi) != -1) //first test
+            { // Try to reduce the amount of garbage queries, or invasive queries.
+
+                summonerNotFound("Invalid Summoner Name");
+                return;
+            }
+            $("#searchField").css("background-color", "rgba(25, 25, 50, .8)"); //if works, make the color and text back to default
+            $("#searchField").attr("placeholder", "Enter Summoner Name");
+
+
+
+            var entry = $("#searchField").val().replace(/\s/g, ''); //This will effectively remove all spaces (because the API needs it without spaces).
+
+            var blockName = entry.replace(/\s/g, '').toLocaleLowerCase(); //This will be the string used in another certain api call.
+            console.log(blockName);
+
+            var query = getSummoner + entry; //Combination of the above.
+
+            $("#loadingGif").show(); //Start the load gif, this will end when the ajax is finished, because sometimes ajax wakes up the API, requiring some time to load.
+            $("#loadingGif2").show();
+
+
+            ///
+            //The following is important: Checks if the user has once searched this player before, if it is, give it 100ms wait while browser
+            ///does a aysnch search in indexeddb for the name when it is stored, then instead of making ajax calls again, instead return the data from DB
+            //HOWEVER, only 1 ajax call is needed to check if the data is REVISED AND UP TO DATE. ELSE WE MUST REFRESH OUR INDEXEDDB DATA.
+
+            var isExist = false;
+            $.ajax({ //Prepare for the search for their top 3 played champs.
+                url: apiPassThruUrl,
+                dataType: "json",
+                method: 'GET',
+                data: {
+                    "apiEndpoint": query,
+                    "api_key": key,
+                    "format": "json"
+                },
+            }).done(function(data4) { //Searches player rank, of all ranks
+
+                console.log(data4);
+                try {
+                    if (data.status.status_code == "404") {
+                        summonerNotFound("Summoner Not Found"); //This calls to above function with a string as error.
+                        $("#loadingGif").hide();
+                        $("#loadingGif2").hide();
+                        return;
+                    }
+                }
+                catch (err) {}
+
+                db.summoners.each(function(data) {
+                    if (blockName == data.name) {
+
+                        displayIconName(data);
+                        displayAllRanks(data.rank, data.id);
+
+                        if (data.revisionDate != data4.revisionDate) { //If the data found in the summoner is newer than current stored data, we must refresh our data again (make ajax)
+                            isExist = false;
+
+                        }
+                        else {
+                            isExist = true;
+
+                        }
+                        return;
+                    }
+                });
+
+
+                window.setTimeout(function() {
+                    isExist = false;
+                    if (isExist == true) {
+                        console.log("Found data in indexeddb");
+                        $("#loadingGif").hide();
+                        $("#loadingGif2").hide();
+                        $("#displayField").addClass("extendTab");
+                        renableSearch();
+                        refreshTab2();
+                        return;
+                    }
+
+                    $.ajax({ //This ajax call will search for the name
+                        url: apiPassThruUrl,
+                        dataType: "json",
+                        method: 'GET',
+                        data: {
+                            "apiEndpoint": query,
+                            "api_key": key,
+                            "format": "json"
+                        },
+                    }).done(function(data) {
+                        console.log(data);
+                        try {
+                            if (data.status.status_code == "404") {
+                                summonerNotFound("Summoner Not Found"); //This calls to above function with a string as error.
+                                $("#loadingGif").hide();
+                                $("#loadingGif2").hide();
+                                return;
+                            }
+                        }
+                        catch (err) {}
+
+                        displayIconName(data);
+
+                        var summonerId = data.id;
+                        var getMastery = "https://na.api.riotgames.com/championmastery/location/NA1/player/" + summonerId + "/topchampions";
+
+
+                        $.ajax({ //Prepare for the search for their top 3 played champs.
+                            url: apiPassThruUrl,
+                            dataType: "json",
+                            method: 'GET',
+                            data: {
+                                "apiEndpoint": getMastery,
+                                "api_key": key,
+                                "format": "json"
+                            },
+                        }).done(function(data5) {
+
+
+                            var champMasteryData = data5;
+
+                            var query2 = getRank + summonerId + '/entry';
+                            console.log(query2);
+                            $.ajax({ //Prepare for the search for their RANK, given the searched summoner's ID and name.
+                                url: apiPassThruUrl,
+                                dataType: "json",
+                                method: 'GET',
+                                data: {
+                                    "apiEndpoint": query2,
+                                    "api_key": key,
+                                    "format": "json"
+                                },
+                            }).done(function(data2) { //Searches player rank, of all ranks
+                                console.log(data2);
+                                try {
+                                    if (data2[summonerId].length == 0) { //If the returned result is 0 or a 404, then the player is NOT RANKED this season.
+                                        summonerNotFound("Summoner Not Found");
+                                        return;
+                                    }
+                                }
+                                catch (err) {
+                                    var summonerHasNoRank = "<p id='summonerSoloRank' class='summonerSoloRank'>" + 'This summoner is not ranked this season.' + "</p>";
+                                    $("#tab1content").append(summonerHasNoRank);
+                                    $("#loadingGif").hide();
+                                    $("#loadingGif2").hide();
+                                    //Using IndexedDB, we store some of the entry info into the DB, then next time we can reduce API calls to server.
+                                    db.summoners.put({
+                                        name: blockName,
+                                        id: data.id,
+                                        profileIconId: data.profileIconId,
+                                        revisionDate: data.revisionDate,
+                                        mastery: champMasteryData
+                                    }).then(function() {
+                                        //
+                                        // Then when data is stored, read from it
+                                        //
+                                        return db.summoners.get(blockName);
+                                    }).then(function(summoners) {
+                                        //
+                                        // Display the result
+                                        //
+                                        console.log(summoners.name + " has id: " + summoners.id);
+                                    }).catch(function(error) {
+                                        //
+                                        // Finally don't forget to catch any error
+                                        // that could have happened anywhere in the
+                                        // code blocks above.
+                                        //
+                                        console.log("Ooops: " + error);
+                                    });
+                                    return;
+                                }
+
+                                displayAllRanks(data2, summonerId); //See above functions
+                                $("#loadingGif").hide();
+                                $("#loadingGif2").hide();
+
+                                //Using IndexedDB, we store some of the entry info into the DB, then next time we can reduce API calls to server.
+                                db.summoners.put({
+                                    name: blockName,
+                                    id: data.id,
+                                    profileIconId: data.profileIconId,
+                                    revisionDate: data.revisionDate,
+                                    rank: data2,
+                                    mastery: champMasteryData
+                                }).then(function() {
+                                    //
+                                    // Then when data is stored, read from it
+                                    //
+                                    return db.summoners.get(blockName);
+                                }).then(function(summoners) {
+                                    //
+                                    // Display the result
+                                    //
+                                    console.log(summoners.name + " has id: " + summoners.id);
+                                }).catch(function(error) {
+                                    //
+                                    // Finally don't forget to catch any error
+                                    // that could have happened anywhere in the
+                                    // code blocks above.
+                                    //
+                                    console.log("Ooops: " + error);
+                                });
+
+
+                                /*
+
+                                                    $.ajax({ //Prepare for the search for their top 3 played champs.
+                                                        url: apiPassThruUrl,
+                                                        dataType: "json",
+                                                        method: 'GET',
+                                                        data: {
+                                                            "apiEndpoint": query2,
+                                                            "api_key": key,
+                                                            "format": "json"
+                                                        },
+                                                    }).done(function(data2) { //Searches player rank, of all ranks
+                                                        console.log(data2);
+                                                        try {
+                                                            if (data2[summonerId].length == 0) { //If the returned result is 0 or a 404, then the player is NOT RANKED this season.
+                                                                summonerNotFound("Summoner Not Found");
+                                                                return;
+                                                            }
+                                                        }
+                                                        catch (err) {
+                                                            var summonerHasNoRank = "<p id='summonerSoloRank' class='summonerSoloRank'>" + 'This summoner is not ranked this season.' + "</p>";
+                                                            $("#tab1content").append(summonerHasNoRank);
+                                                            $("#loadingGif").hide();
+                                                            return;
+                                                        }
+
+                                                        displayAllRanks(data2, summonerId); //See above functions
+                                                        $("#loadingGif").hide();
+                                                    }).fail(function(err) {
+                                                        throw err;
+                                                    });
+                                */
+
+
+
+
+                            }).fail(function(err) { //End of rank search
+                                throw err;
+                            });
+
+
+                        }).fail(function(err) { //End of champ mastery search
+                            throw err;
+                        });
+
+
+                    }).fail(function(err) { //End of Summoner search
+                        //throw err;
+                        summonerNotFound("Invalid Summoner Name");
+                    });
+
+
+
+
+                    renableSearch();
+                    $("#displayField").addClass("extendTab");
+                    //console.log($("#searchField").val());
+
+                    refreshTab2();
+                }, 100); //End of Window.wait, wait for 100 ms.
+
+            }).fail(function(err) {
+                throw err;
+            });
+
+
+
+
+
+        } //End of searchSummoner()
+    </script>
+
+    <!--
+    <script>
+        function startTime() {
+            var amPM = "AM";
+            var today = new Date();
+            var h = today.getHours();
+
+            if (h == 0) {
+                h = 12;
+                amPM = "AM";
+            }
+            else if (h >= 12 && h <= 23) {
+                amPM = "PM";
+            }
+            if (h >= 13 && h <= 23) {
+                h = h - 12;
+            }
+            var m = today.getMinutes();
+            var s = today.getSeconds();
+            m = checkTime(m);
+            s = checkTime(s);
+            document.getElementById('timeTitle').innerHTML =
+                h + ":" + m + ":" + s + " " + amPM;
+            var t = setTimeout(startTime, 500);
+        }
+
+        function checkTime(i) {
+            if (i < 10) {
+                i = "0" + i
+            }; // add zero in front of numbers < 10
+            return i;
+        }
+
+        startTime();
+    </script>
+    -->
+</body>
+
+
+</html>
