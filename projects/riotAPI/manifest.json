@@ -1,0 +1,9 @@
+{
+  "name": "Project 6: Riot Api",
+  "short_name": "Big Project",
+  
+  "start_url": "./riotApi.html?homescreen=1",
+  "display": "standalone"
+}
+
+

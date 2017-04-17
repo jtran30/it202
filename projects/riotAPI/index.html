@@ -436,7 +436,7 @@
         <div class="mdl-layout__drawer">
             <span class="mdl-layout-title">Menu</span>
             <nav class="mdl-navigation">
-                <p id="link1" class="mdl-navigation__link ">Individuale</p>
+                <p id="link1" class="mdl-navigation__link ">Individual</p>
                 <p id="link3" class="mdl-navigation__link ">Top Mastery</p>
                 <p id="link2" class="mdl-navigation__link ">Search History</p>
                 <p id="link4" class="mdl-navigation__link ">About</p>
@@ -510,7 +510,7 @@
             $("#link1").addClass("darkSelectedTab");
             $("body").show();
             $("#searchField").focus();
-
+            getChampionData();
 
             $(window).click(function(e) { //Handle click events
                 if (e.target.id == "link1") { //Link 1 correlates to tab1, and so on.
@@ -571,15 +571,14 @@
                     });
                     
                     */
-    
-                    if($("#searchField").val() == "")
-                    {
+
+                    if ($("#searchField").val() == "") {
                         alert("Please type a Summoner Name in the text field and search before clicking onto this tab.");
                     }
-                    else{
+                    else {
                         refreshTab3();
                     }
-                    
+
 
 
                 }
@@ -659,6 +658,62 @@
         }
 
 
+        function getChampionData() {
+            var db2 = new Dexie("champion"); //Init db for usage.
+            db2.version(1).stores({
+                champions: 'version, champion'
+            });
+
+            var hasData = false;
+            db2.champions.each(function(datas) {
+                console.log(datas.version);
+                hasData = true;
+            });
+
+            window.setTimeout(function() { //Adjust centerTab2 height to be as tall as the table
+                if (hasData == true) {
+
+                    return;
+                }
+                else {
+                    var query = "https://global.api.riotgames.com/api/lol/static-data/NA/v1.2/champion?dataById=true&";
+                    var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
+                    $.ajax({ //Prepare for the search for their top 3 played champs.
+                        url: apiPassThruUrl,
+                        dataType: "json",
+                        method: 'GET',
+                        data: {
+                            "apiEndpoint": query,
+                            "api_key": key,
+                            "format": "json"
+                        },
+                    }).done(function(data2) { //Searches player rank, of all ranks
+                        console.log(data2);
+                        db2.champions.put({
+                            version: data2.version,
+                            champion: data2.data
+                        }).then(function() {
+                            //
+                            // Then when data is stored, read from it
+                            //
+                            return db2
+                        }).then(function(champ) {
+
+                        }).catch(function(error) {
+
+                            console.log("Ooops: " + error);
+                        });
+
+
+                    }).fail(function(err) {
+                        throw err;
+                    });
+                }
+            }, 50);
+
+
+        }
+
         function drawChart() {
             // Create the data table.
             var data = new google.visualization.DataTable();
@@ -669,30 +724,49 @@
             db.version(1).stores({
                 summoners: 'name, id, profileIconId, revisionDate ,rank, mastery'
             });
+
+
             var options = {
                 'title': 'Top 3 Champion Mastery',
             };
+
+
             var entry = $("#searchField").val();
             var blockName = entry.replace(/\s/g, '').toLocaleLowerCase(); //This will be the string used in another certain api call.
-            console.log(blockName);
+
+
+
+
+
+            var db2 = new Dexie("champion"); //Init db for usage.
+            db2.version(1).stores({
+                champions: 'version, champion'
+            });
+
+
+
+
+
+
+
             db.summoners.each(function(datas) {
-                
+
                 if (datas.name == blockName) {
                     try {
-                       
-                        data.addRow([datas.mastery[0].championId.toString(), parseInt(datas.mastery[0].championPoints)]);
-                        data.addRow([datas.mastery[1].championId.toString(), parseInt(datas.mastery[1].championPoints)]);
-                        data.addRow([datas.mastery[2].championId.toString(), parseInt(datas.mastery[2].championPoints)]);
-                        // Instantiate and draw our chart, passing in some options.
-
+                        db2.champions.each(function(champName) {
+                            data.addRow([champName.champion[datas.mastery[0].championId].name.toString(), parseInt(datas.mastery[0].championPoints)]);
+                            data.addRow([champName.champion[datas.mastery[1].championId].name.toString(), parseInt(datas.mastery[1].championPoints)]);
+                            data.addRow([champName.champion[datas.mastery[2].championId].name.toString(), parseInt(datas.mastery[2].championPoints)]);
+                            // Instantiate and draw our chart, passing in some options.
+                        });
                     }
                     catch (err) {
                         throw err
                     }
 
                 }
-                else{
-                    
+                else {
+
                 }
             });
 
@@ -700,48 +774,7 @@
             window.setTimeout(function() { //Wait for response
                 var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
                 chart.draw(data, options);
-                console.log("test");
             }, 400);
-
-
-
-
-            /*
-                        var url = "https://data.cityofchicago.org/resource/7as2-ds3y.json" +
-                            "?$query=select%20community_area%2Ccount(*)%20as%20totalPotholes%20where%20status=%27open%27%20Group%20By%20community_area" + //note the jquery is similar to SQL (practically the same)
-                            "%20order%20by%20count(*)%20asc"; //part 2 of sql
-
-                        $.ajax({
-                            url: url,
-                            method: 'GET',
-                        }).done(function(result) {
-                            $.each(result, function(index, value) { //Jump down two object levels, and loop through end
-
-
-
-                                if (typeof value.community_area == "undefined") {
-                                    data.addRow(
-                                        ["-1", parseInt(value.totalpotholes)]
-                                    );
-                                }
-                                else {
-                                    data.addRow(
-                                        [value.community_area.toString(), parseInt(value.totalpotholes)]
-                                    );
-                                }
-
-
-                            });
-                            console.log(result); //This prints out the OBJECTS, we can see it in CONSOLE and navigate. Comment this afterwards
-
-                            // Instantiate and draw our chart, passing in some options.
-                            var chart = new google.visualization.PieChart(document.getElementById('chart_div'));
-                            chart.draw(data, options);
-                        }).fail(function(err) {
-                            throw err;
-                        });
-
-            */
 
         }
 

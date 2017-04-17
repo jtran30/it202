@@ -1,0 +1,6 @@
+1) The search button need to have a better color scheme, it almost is like a background object.
+2) Cool animations.
+3) Top left button is clunky.
+4) Feels like there is lacking some information on the "individual" tab.
+5) Logo is cool.
+6) Search history is cool.
