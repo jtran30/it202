@@ -672,7 +672,6 @@
 
             window.setTimeout(function() { //Adjust centerTab2 height to be as tall as the table
                 if (hasData == true) {
-
                     return;
                 }
                 else {
@@ -728,6 +727,7 @@
 
             var options = {
                 'title': 'Top 3 Champion Mastery',
+                'backgroundColor': 'rgba(255,255,255,.7)'
             };
 
 
@@ -753,12 +753,15 @@
 
                 if (datas.name == blockName) {
                     try {
-                        db2.champions.each(function(champName) {
+                        
+                        db2.champions.reverse().each(function(champName) {
                             data.addRow([champName.champion[datas.mastery[0].championId].name.toString(), parseInt(datas.mastery[0].championPoints)]);
                             data.addRow([champName.champion[datas.mastery[1].championId].name.toString(), parseInt(datas.mastery[1].championPoints)]);
                             data.addRow([champName.champion[datas.mastery[2].championId].name.toString(), parseInt(datas.mastery[2].championPoints)]);
+                            
                             // Instantiate and draw our chart, passing in some options.
                         });
+                        
                     }
                     catch (err) {
                         throw err
@@ -922,8 +925,8 @@
 
 
 
-            var getSummoner = 'https://na.api.pvp.net/lol/summoner/v3/summoners/by-name/';
-            var getRank = 'https://na.api.riotgames.com/api/lol/NA/v2.5/league/by-summoner/';
+            var getSummoner = 'https://na1.api.riotgames.com/lol/summoner/v3/summoners/by-name/';
+            var getRank = 'https://na1.api.riotgames.com/api/lol/NA/v2.5/league/by-summoner/';
             var apiPassThruUrl = "https://polar-garden-75406.herokuapp.com/apiPassThru.php";
 
 
@@ -945,7 +948,7 @@
             console.log(blockName);
 
             var query = getSummoner + entry; //Combination of the above.
-
+console.log(query);
             $("#loadingGif").show(); //Start the load gif, this will end when the ajax is finished, because sometimes ajax wakes up the API, requiring some time to load.
             $("#loadingGif2").show();
 
@@ -968,6 +971,7 @@
             }).done(function(data4) { //Searches player rank, of all ranks
 
                 console.log(data4);
+ 
                 try {
                     if (data.status.status_code == "404") {
                         summonerNotFound("Summoner Not Found"); //This calls to above function with a string as error.
@@ -992,13 +996,13 @@
                             isExist = true;
 
                         }
-                        return;
+                        
                     }
                 });
 
 
                 window.setTimeout(function() {
-                    isExist = false;
+                    
                     if (isExist == true) {
                         console.log("Found data in indexeddb");
                         $("#loadingGif").hide();
