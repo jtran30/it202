@@ -199,6 +199,10 @@ footer p {
   background-image: url('images/TheDodgeGame.gif');
 }
 
+.demo-blog .league .mdl-card__media {
+  background-image: url('images/League.png');
+}
+
 .demo-blog .theTieress .mdl-card__media {
   background-image: url('images/TheTieress.PNG');
 }
@@ -208,7 +212,7 @@ footer p {
 }
 
 .demo-blog .lab3 .mdl-card__media {
-  background-image: url('images/Lab3.PNG');
+  background-image: url('images/USG.PNG');
 }
 
 .demo-blog .proj2 .mdl-card__media {
